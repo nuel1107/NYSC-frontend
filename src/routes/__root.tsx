@@ -76,10 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Ikeja LGA Digital Ecosystem — NYSC Management" },
       { name: "description", content: "Tri-portal NYSC management platform for Corps members, Admins, and LGI super-admins in Ikeja LGA." },
-      { property: "og:title", content: "Ikeja LGA Digital Ecosystem" },
-      { property: "og:description", content: "Attendance, SAED, community and impact reporting for the Ikeja NYSC LGA." },
+      { property: "og:title", content: "Ikeja LGA Digital Ecosystem — NYSC Management" },
+      { property: "og:description", content: "Tri-portal NYSC management platform for Corps members, Admins, and LGI super-admins in Ikeja LGA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Ikeja LGA Digital Ecosystem — NYSC Management" },
+      { name: "twitter:description", content: "Tri-portal NYSC management platform for Corps members, Admins, and LGI super-admins in Ikeja LGA." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/add2d97b-c57f-4b58-87af-256a7c74a4bd/id-preview-4628f397--9b729816-1377-4438-b036-37381ae60cc4.lovable.app-1778435236699.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/add2d97b-c57f-4b58-87af-256a7c74a4bd/id-preview-4628f397--9b729816-1377-4438-b036-37381ae60cc4.lovable.app-1778435236699.png" },
     ],
     links: [
       {
