@@ -9,38 +9,178 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedMediaRouteImport } from './routes/_authenticated/media'
+import { Route as AuthenticatedLgiRouteImport } from './routes/_authenticated/lgi'
+import { Route as AuthenticatedCorpsRouteImport } from './routes/_authenticated/corps'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedMediaIndexRouteImport } from './routes/_authenticated/media/index'
+import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticated/lgi/index'
+import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMediaRoute = AuthenticatedMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLgiRoute = AuthenticatedLgiRouteImport.update({
+  id: '/lgi',
+  path: '/lgi',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCorpsRoute = AuthenticatedCorpsRouteImport.update({
+  id: '/corps',
+  path: '/corps',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMediaIndexRoute = AuthenticatedMediaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedMediaRoute,
+} as any)
+const AuthenticatedLgiIndexRoute = AuthenticatedLgiIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedLgiRoute,
+} as any)
+const AuthenticatedCorpsIndexRoute = AuthenticatedCorpsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/news': typeof NewsRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/corps': typeof AuthenticatedCorpsRouteWithChildren
+  '/lgi': typeof AuthenticatedLgiRouteWithChildren
+  '/media': typeof AuthenticatedMediaRouteWithChildren
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/corps/': typeof AuthenticatedCorpsIndexRoute
+  '/lgi/': typeof AuthenticatedLgiIndexRoute
+  '/media/': typeof AuthenticatedMediaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/news': typeof NewsRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/corps': typeof AuthenticatedCorpsIndexRoute
+  '/lgi': typeof AuthenticatedLgiIndexRoute
+  '/media': typeof AuthenticatedMediaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/news': typeof NewsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
+  '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
+  '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
+  '/_authenticated/lgi/': typeof AuthenticatedLgiIndexRoute
+  '/_authenticated/media/': typeof AuthenticatedMediaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/news'
+    | '/admin'
+    | '/corps'
+    | '/lgi'
+    | '/media'
+    | '/admin/'
+    | '/corps/'
+    | '/lgi/'
+    | '/media/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth' | '/news' | '/admin' | '/corps' | '/lgi' | '/media'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/news'
+    | '/_authenticated/admin'
+    | '/_authenticated/corps'
+    | '/_authenticated/lgi'
+    | '/_authenticated/media'
+    | '/_authenticated/admin/'
+    | '/_authenticated/corps/'
+    | '/_authenticated/lgi/'
+    | '/_authenticated/media/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  NewsRoute: typeof NewsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +188,132 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/media': {
+      id: '/_authenticated/media'
+      path: '/media'
+      fullPath: '/media'
+      preLoaderRoute: typeof AuthenticatedMediaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/lgi': {
+      id: '/_authenticated/lgi'
+      path: '/lgi'
+      fullPath: '/lgi'
+      preLoaderRoute: typeof AuthenticatedLgiRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/corps': {
+      id: '/_authenticated/corps'
+      path: '/corps'
+      fullPath: '/corps'
+      preLoaderRoute: typeof AuthenticatedCorpsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/media/': {
+      id: '/_authenticated/media/'
+      path: '/'
+      fullPath: '/media/'
+      preLoaderRoute: typeof AuthenticatedMediaIndexRouteImport
+      parentRoute: typeof AuthenticatedMediaRoute
+    }
+    '/_authenticated/lgi/': {
+      id: '/_authenticated/lgi/'
+      path: '/'
+      fullPath: '/lgi/'
+      preLoaderRoute: typeof AuthenticatedLgiIndexRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
+    }
+    '/_authenticated/corps/': {
+      id: '/_authenticated/corps/'
+      path: '/'
+      fullPath: '/corps/'
+      preLoaderRoute: typeof AuthenticatedCorpsIndexRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedCorpsRouteChildren {
+  AuthenticatedCorpsIndexRoute: typeof AuthenticatedCorpsIndexRoute
+}
+
+const AuthenticatedCorpsRouteChildren: AuthenticatedCorpsRouteChildren = {
+  AuthenticatedCorpsIndexRoute: AuthenticatedCorpsIndexRoute,
+}
+
+const AuthenticatedCorpsRouteWithChildren =
+  AuthenticatedCorpsRoute._addFileChildren(AuthenticatedCorpsRouteChildren)
+
+interface AuthenticatedLgiRouteChildren {
+  AuthenticatedLgiIndexRoute: typeof AuthenticatedLgiIndexRoute
+}
+
+const AuthenticatedLgiRouteChildren: AuthenticatedLgiRouteChildren = {
+  AuthenticatedLgiIndexRoute: AuthenticatedLgiIndexRoute,
+}
+
+const AuthenticatedLgiRouteWithChildren =
+  AuthenticatedLgiRoute._addFileChildren(AuthenticatedLgiRouteChildren)
+
+interface AuthenticatedMediaRouteChildren {
+  AuthenticatedMediaIndexRoute: typeof AuthenticatedMediaIndexRoute
+}
+
+const AuthenticatedMediaRouteChildren: AuthenticatedMediaRouteChildren = {
+  AuthenticatedMediaIndexRoute: AuthenticatedMediaIndexRoute,
+}
+
+const AuthenticatedMediaRouteWithChildren =
+  AuthenticatedMediaRoute._addFileChildren(AuthenticatedMediaRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedCorpsRoute: typeof AuthenticatedCorpsRouteWithChildren
+  AuthenticatedLgiRoute: typeof AuthenticatedLgiRouteWithChildren
+  AuthenticatedMediaRoute: typeof AuthenticatedMediaRouteWithChildren
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedCorpsRoute: AuthenticatedCorpsRouteWithChildren,
+  AuthenticatedLgiRoute: AuthenticatedLgiRouteWithChildren,
+  AuthenticatedMediaRoute: AuthenticatedMediaRouteWithChildren,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AuthRoute: AuthRoute,
+  NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
