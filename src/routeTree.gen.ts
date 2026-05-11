@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as DeviceChangeRouteImport } from './routes/device-change'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +26,11 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeviceChangeRoute = DeviceChangeRouteImport.update({
+  id: '/device-change',
+  path: '/device-change',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -85,6 +91,7 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/device-change'
     | '/news'
     | '/admin'
     | '/corps'
@@ -134,12 +144,21 @@ export interface FileRouteTypes {
     | '/lgi/'
     | '/media/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/news' | '/admin' | '/corps' | '/lgi' | '/media'
+  to:
+    | '/'
+    | '/auth'
+    | '/device-change'
+    | '/news'
+    | '/admin'
+    | '/corps'
+    | '/lgi'
+    | '/media'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/device-change'
     | '/news'
     | '/_authenticated/admin'
     | '/_authenticated/corps'
@@ -155,6 +174,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DeviceChangeRoute: typeof DeviceChangeRoute
   NewsRoute: typeof NewsRoute
 }
 
@@ -165,6 +185,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/device-change': {
+      id: '/device-change'
+      path: '/device-change'
+      fullPath: '/device-change'
+      preLoaderRoute: typeof DeviceChangeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -313,8 +340,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  DeviceChangeRoute: DeviceChangeRoute,
   NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
