@@ -20,8 +20,8 @@ function CorpsHome() {
   useEffect(() => {
     void supabase.from("impact_metrics").select("metric_key,label,value,unit").order("display_order").then(({ data }) => setMetrics(data ?? []));
     if (user) {
-      void supabase.from("attendance").select("id", { count: "exact", head: true }).eq("user_id", user.id).then(({ count }) => setAttendanceCount(count ?? 0));
-      void supabase.from("absence_requests").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "pending").then(({ count }) => setPendingAbsences(count ?? 0));
+      void supabase.from("event_attendance").select("id", { count: "exact", head: true }).eq("user_id", user.id).not("clock_in_at", "is", null).then(({ count }) => setAttendanceCount(count ?? 0));
+      void supabase.from("complaints").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "pending").then(({ count }) => setPendingAbsences(count ?? 0));
     }
   }, [user]);
 
