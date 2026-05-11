@@ -123,6 +123,23 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
         </div>
       </header>
 
+      {pendingDevReq && (
+        <div className="border-b border-amber-200 bg-amber-50 dark:border-amber-900/40 dark:bg-amber-950/40">
+          <div className="container mx-auto flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
+            <div>
+              <p className="font-medium text-amber-900 dark:text-amber-100">Device transfer requested</p>
+              <p className="text-xs text-amber-800/80 dark:text-amber-200/70">
+                A new device wants access to your account. {pendingDevReq.reason}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => approveOldDevice(false)}>Reject</Button>
+              <Button size="sm" className="bg-gradient-primary" onClick={() => approveOldDevice(true)}>Approve transfer</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <motion.main
         key={path}
         initial={{ opacity: 0, y: 8 }}
@@ -132,6 +149,7 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
       >
         {children}
       </motion.main>
+
 
       {/* Bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 backdrop-blur">
