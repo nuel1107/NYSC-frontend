@@ -42,6 +42,7 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [unread, setUnread] = useState(0);
   const { user } = useAuth();
+  const [pendingDevReq, setPendingDevReq] = useState<{ id: string; new_label: string | null; reason: string; new_fingerprint: string } | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -50,11 +51,38 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
       const { data: reads } = await supabase.from("notification_reads").select("notification_id").eq("user_id", user.id);
       const readSet = new Set((reads ?? []).map((r) => r.notification_id));
       setUnread((data ?? []).filter((n) => !readSet.has(n.id)).length);
+
+      const { data: req } = await supabase
+        .from("device_change_requests")
+        .select("id,new_label,reason,new_fingerprint")
+        .eq("user_id", user.id).eq("status", "pending").eq("path", "old_device")
+        .order("created_at", { ascending: false }).limit(1).maybeSingle();
+      setPendingDevReq(req as typeof pendingDevReq);
     };
     void load();
     const ch = supabase.channel("notif").on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, load).subscribe();
     return () => { void supabase.removeChannel(ch); };
   }, [user]);
+
+  const approveOldDevice = async (approve: boolean) => {
+    if (!user || !pendingDevReq) return;
+    if (approve) {
+      await supabase.from("user_devices").update({ is_active: false }).eq("user_id", user.id);
+      await supabase.from("user_devices").insert({
+        user_id: user.id,
+        fingerprint: pendingDevReq.new_fingerprint,
+        label: pendingDevReq.new_label,
+        is_active: true,
+      });
+    }
+    await supabase.from("device_change_requests").update({
+      status: approve ? "approved" : "rejected",
+      reviewed_by: user.id,
+      reviewed_at: new Date().toISOString(),
+    }).eq("id", pendingDevReq.id);
+    setPendingDevReq(null);
+  };
+
 
   const roleLabel: Record<AppRole, string> = {
     corps_member: "Corps Member",
