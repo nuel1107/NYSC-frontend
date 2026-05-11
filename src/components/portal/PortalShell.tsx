@@ -61,6 +61,7 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
     admin: "Admin",
     lgi: "LGI Super-Admin",
     media_editor: "Media Editor",
+    corporate_firm: "Corporate Firm",
   };
 
   return (
