@@ -23,18 +23,20 @@ const signinSchema = z.object({
   password: z.string().min(6, "Min 6 characters").max(128),
 });
 
-const signupSchema = signinSchema.extend({
-  fullName: z.string().trim().min(2, "Name required").max(100),
-  stateCode: z.string().trim().max(20).optional().or(z.literal("")),
-  phone: z.string().trim().max(20).optional().or(z.literal("")),
-  requestedRole: z.enum(["corps_member", "admin", "lgi", "media_editor"]),
-});
+const ROLES: { value: AppRole; label: string; note?: string }[] = [
+  { value: "corps_member", label: "Corps Member" },
+  { value: "admin", label: "Admin", note: "LGI approval required" },
+  { value: "lgi", label: "LGI Super-Admin", note: "Auto-approved if seat is open" },
+  { value: "media_editor", label: "Media Editor", note: "LGI approval required" },
+  { value: "corporate_firm", label: "Corporate Firm", note: "LGI approval required" },
+];
 
 function AuthPage() {
   const { tab } = Route.useSearch();
   const navigate = useNavigate();
   const { user, primaryRole, loading } = useAuth();
   const [busy, setBusy] = useState(false);
+  const [role, setRole] = useState<AppRole>("corps_member");
 
   useEffect(() => {
     if (!loading && user && primaryRole) {
@@ -57,68 +59,78 @@ function AuthPage() {
   const onSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
-    const parsed = signupSchema.safeParse({
-      email: f.get("email"), password: f.get("password"),
-      fullName: f.get("fullName"), stateCode: f.get("stateCode"),
-      phone: f.get("phone"), requestedRole: f.get("requestedRole"),
-    });
-    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+
+    const base = signinSchema.safeParse({ email: f.get("email"), password: f.get("password") });
+    if (!base.success) { toast.error(base.error.issues[0].message); return; }
+
+    const fullName = String(f.get("fullName") ?? "").trim();
+    if (fullName.length < 2) { toast.error("Full name is required"); return; }
+
+    const meta: Record<string, string> = {
+      full_name: fullName,
+      role,
+      phone: String(f.get("phone") ?? ""),
+    };
+
+    if (role === "corps_member") {
+      meta.state_code = String(f.get("state_code") ?? "");
+      meta.batch = String(f.get("batch") ?? "");
+      meta.stream = String(f.get("stream") ?? "");
+      meta.cds_group = String(f.get("cds_group") ?? "");
+    } else if (role === "admin" || role === "lgi") {
+      meta.portal_number = String(f.get("portal_number") ?? "");
+    } else if (role === "corporate_firm") {
+      meta.firm_company_name = String(f.get("firm_company_name") ?? "");
+      meta.num_staff = String(f.get("num_staff") ?? "");
+      meta.industry = String(f.get("industry") ?? "");
+      meta.applicant_role = String(f.get("applicant_role") ?? "");
+      meta.csr_focus = String(f.get("csr_focus") ?? "");
+    }
+
     setBusy(true);
     const { data, error } = await supabase.auth.signUp({
-      email: parsed.data.email,
-      password: parsed.data.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: { full_name: parsed.data.fullName, state_code: parsed.data.stateCode, phone: parsed.data.phone },
-      },
+      email: base.data.email,
+      password: base.data.password,
+      options: { emailRedirectTo: `${window.location.origin}/`, data: meta },
     });
     if (error) { setBusy(false); toast.error(error.message); return; }
 
-    // If a non-corps role was requested, insert a pending role row.
-    const requested = parsed.data.requestedRole as AppRole;
-    if (data.user && requested !== "corps_member") {
-      await supabase.from("user_roles").insert({ user_id: data.user.id, role: requested, status: "pending" });
-      toast.success("Account created. Your elevated role is awaiting LGI approval.");
-    } else {
-      toast.success("Account created. Welcome aboard.");
+    // Corporate firm: create firm row owned by new user
+    if (role === "corporate_firm" && data.user) {
+      await supabase.from("corporate_firms").insert({
+        owner_id: data.user.id,
+        company_name: meta.firm_company_name,
+        email: base.data.email,
+        phone: meta.phone || null,
+        industry: meta.industry || null,
+        applicant_role: meta.applicant_role || null,
+        num_staff: meta.num_staff ? Number(meta.num_staff) : null,
+        csr_focus: meta.csr_focus || null,
+      });
     }
+
     setBusy(false);
+    if (role === "corps_member") toast.success("Welcome aboard. You're approved.");
+    else if (role === "lgi") toast.success("Account created. If the LGI seat is open, you're approved.");
+    else toast.success("Account created. Awaiting LGI approval.");
   };
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      {/* Left brand panel */}
       <div className="relative hidden bg-gradient-hero p-10 text-primary-foreground lg:flex lg:flex-col lg:justify-between">
         <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-90 hover:opacity-100">
           <ArrowLeft className="size-4" /> Back to home
         </Link>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="space-y-6"
-        >
-          <div className="grid size-12 place-items-center rounded-2xl bg-white/15 backdrop-blur">
-            <Shield className="size-6" />
-          </div>
-          <h1 className="max-w-md text-4xl font-semibold leading-tight tracking-tight">
-            Ikeja LGA NYSC Digital Ecosystem.
-          </h1>
-          <p className="max-w-md text-white/80">
-            Sign in to your portal — Corps Member, Admin, Media Editor, or LGI Super-Admin.
-          </p>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6">
+          <div className="grid size-12 place-items-center rounded-2xl bg-white/15 backdrop-blur"><Shield className="size-6" /></div>
+          <h1 className="max-w-md text-4xl font-semibold leading-tight tracking-tight">Ikeja LGA NYSC Digital Ecosystem.</h1>
+          <p className="max-w-md text-white/80">Corps Member, Admin, Media, LGI Super-Admin, or Corporate Firm — one secure portal.</p>
         </motion.div>
         <p className="text-xs text-white/60">© {new Date().getFullYear()} Ikeja LGA Secretariat.</p>
       </div>
 
-      {/* Right form */}
       <div className="flex items-center justify-center p-6 sm:p-10">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-md"
-        >
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-md">
           <div className="mb-6 text-center lg:hidden">
             <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="size-4" /> Home</Link>
           </div>
@@ -140,25 +152,56 @@ function AuthPage() {
 
             <TabsContent value="signup" className="mt-6">
               <form onSubmit={onSignUp} className="space-y-4">
-                <Field label="Full name" name="fullName" required />
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="State code" name="stateCode" placeholder="LA/24A/0001" />
-                  <Field label="Phone" name="phone" type="tel" />
-                </div>
-                <Field label="Email" name="email" type="email" autoComplete="email" required />
-                <Field label="Password" name="password" type="password" autoComplete="new-password" required />
                 <div className="space-y-1.5">
                   <Label>Account type</Label>
-                  <Select name="requestedRole" defaultValue="corps_member">
+                  <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="corps_member">Corps Member</SelectItem>
-                      <SelectItem value="admin">Admin (LGI approval required)</SelectItem>
-                      <SelectItem value="media_editor">Media Editor (LGI approval required)</SelectItem>
-                      <SelectItem value="lgi">LGI Super-Admin (LGI approval required)</SelectItem>
+                      {ROLES.map((r) => (
+                        <SelectItem key={r.value} value={r.value}>
+                          {r.label}{r.note ? ` — ${r.note}` : ""}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
+
+                <Field label="Full name" name="fullName" required />
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Email" name="email" type="email" autoComplete="email" required />
+                  <Field label="Phone" name="phone" type="tel" />
+                </div>
+                <Field label="Password" name="password" type="password" autoComplete="new-password" required />
+
+                {role === "corps_member" && (
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="State code" name="state_code" placeholder="LA/24A/0001" />
+                      <Field label="Batch" name="batch" placeholder="2024 Batch A" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Stream" name="stream" placeholder="Stream I" />
+                      <Field label="CDS group" name="cds_group" placeholder="ICT CDS" />
+                    </div>
+                  </>
+                )}
+
+                {(role === "admin" || role === "lgi") && (
+                  <Field label="Portal/Staff number" name="portal_number" placeholder="LGI-001" required />
+                )}
+
+                {role === "corporate_firm" && (
+                  <>
+                    <Field label="Company name" name="firm_company_name" required />
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Industry" name="industry" placeholder="FinTech" />
+                      <Field label="Number of staff" name="num_staff" type="number" min={1} />
+                    </div>
+                    <Field label="Your role at the firm" name="applicant_role" placeholder="HR Director" />
+                    <Field label="CSR focus" name="csr_focus" placeholder="Youth empowerment" />
+                  </>
+                )}
+
                 <Button disabled={busy} className="w-full bg-gradient-primary shadow-elegant">
                   {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Create account
                 </Button>

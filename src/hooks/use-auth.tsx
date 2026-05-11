@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { reconcileDevice } from "@/lib/device";
 
-export type AppRole = "corps_member" | "admin" | "lgi" | "media_editor";
+export type AppRole = "corps_member" | "admin" | "lgi" | "media_editor" | "corporate_firm";
 
 interface Profile {
   id: string;
@@ -10,6 +11,9 @@ interface Profile {
   state_code: string | null;
   phone: string | null;
   avatar_url: string | null;
+  portal_number: string | null;
+  firm_company_name: string | null;
+  cds_group: string | null;
 }
 
 interface AuthCtx {
@@ -18,6 +22,7 @@ interface AuthCtx {
   profile: Profile | null;
   roles: AppRole[];
   loading: boolean;
+  deviceLocked: boolean;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
   hasRole: (r: AppRole) => boolean;
@@ -32,14 +37,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deviceLocked, setDeviceLocked] = useState(false);
 
   const loadExtras = async (uid: string) => {
     const [{ data: p }, { data: r }] = await Promise.all([
-      supabase.from("profiles").select("id,full_name,state_code,phone,avatar_url").eq("id", uid).maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("id,full_name,state_code,phone,avatar_url,portal_number,firm_company_name,cds_group")
+        .eq("id", uid)
+        .maybeSingle(),
       supabase.from("user_roles").select("role,status").eq("user_id", uid).eq("status", "approved"),
     ]);
     setProfile(p as Profile | null);
     setRoles(((r ?? []) as { role: AppRole }[]).map((x) => x.role));
+
+    // Device reconciliation
+    try {
+      const result = await reconcileDevice(uid);
+      setDeviceLocked(result.state === "locked");
+    } catch (e) {
+      console.error("Device reconcile failed", e);
+    }
   };
 
   useEffect(() => {
@@ -51,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setProfile(null);
         setRoles([]);
+        setDeviceLocked(false);
       }
     });
 
@@ -67,13 +86,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refresh = async () => { if (user) await loadExtras(user.id); };
   const signOut = async () => { await supabase.auth.signOut(); };
 
-  // Priority: lgi > admin > media_editor > corps_member
-  const order: AppRole[] = ["lgi", "admin", "media_editor", "corps_member"];
+  // Priority: lgi > admin > media_editor > corporate_firm > corps_member
+  const order: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
   const primaryRole = order.find((r) => roles.includes(r)) ?? null;
 
   return (
     <Ctx.Provider value={{
-      session, user, profile, roles, loading, signOut, refresh,
+      session, user, profile, roles, loading, deviceLocked, signOut, refresh,
       hasRole: (r) => roles.includes(r),
       primaryRole,
     }}>
@@ -93,6 +112,7 @@ export function rolePortalPath(role: AppRole | null): string {
     case "lgi": return "/lgi";
     case "admin": return "/admin";
     case "media_editor": return "/media";
+    case "corporate_firm": return "/firm";
     case "corps_member": return "/corps";
     default: return "/auth";
   }
