@@ -22,6 +22,7 @@ import { Route as AuthenticatedMediaIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticated/lgi/index'
 import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedLgiApprovalsRouteImport } from './routes/_authenticated/lgi/approvals'
 
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
@@ -87,6 +88,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedLgiApprovalsRoute =
+  AuthenticatedLgiApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedLgiRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
+  '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/corps/': typeof AuthenticatedCorpsIndexRoute
   '/lgi/': typeof AuthenticatedLgiIndexRoute
@@ -107,6 +115,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
+  '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
   '/lgi': typeof AuthenticatedLgiIndexRoute
@@ -123,6 +132,7 @@ export interface FileRoutesById {
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
+  '/_authenticated/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
   '/_authenticated/lgi/': typeof AuthenticatedLgiIndexRoute
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/corps'
     | '/lgi'
     | '/media'
+    | '/lgi/approvals'
     | '/admin/'
     | '/corps/'
     | '/lgi/'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/device-change'
     | '/news'
+    | '/lgi/approvals'
     | '/admin'
     | '/corps'
     | '/lgi'
@@ -164,6 +176,7 @@ export interface FileRouteTypes {
     | '/_authenticated/corps'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
+    | '/_authenticated/lgi/approvals'
     | '/_authenticated/admin/'
     | '/_authenticated/corps/'
     | '/_authenticated/lgi/'
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/lgi/approvals': {
+      id: '/_authenticated/lgi/approvals'
+      path: '/approvals'
+      fullPath: '/lgi/approvals'
+      preLoaderRoute: typeof AuthenticatedLgiApprovalsRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
+    }
   }
 }
 
@@ -297,10 +317,12 @@ const AuthenticatedCorpsRouteWithChildren =
   AuthenticatedCorpsRoute._addFileChildren(AuthenticatedCorpsRouteChildren)
 
 interface AuthenticatedLgiRouteChildren {
+  AuthenticatedLgiApprovalsRoute: typeof AuthenticatedLgiApprovalsRoute
   AuthenticatedLgiIndexRoute: typeof AuthenticatedLgiIndexRoute
 }
 
 const AuthenticatedLgiRouteChildren: AuthenticatedLgiRouteChildren = {
+  AuthenticatedLgiApprovalsRoute: AuthenticatedLgiApprovalsRoute,
   AuthenticatedLgiIndexRoute: AuthenticatedLgiIndexRoute,
 }
 
