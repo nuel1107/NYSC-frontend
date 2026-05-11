@@ -56,34 +56,103 @@ export type Database = {
         }
         Relationships: []
       }
-      attendance: {
+      cds_rankings: {
         Row: {
-          event_id: string
+          benefits: string | null
+          cds_group: string
           id: string
-          scanned_at: string
+          notes: string | null
+          period_month: number
+          period_year: number
+          rank: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          benefits?: string | null
+          cds_group: string
+          id?: string
+          notes?: string | null
+          period_month: number
+          period_year: number
+          rank: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          benefits?: string | null
+          cds_group?: string
+          id?: string
+          notes?: string | null
+          period_month?: number
+          period_year?: number
+          rank?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      club_memberships: {
+        Row: {
+          club_id: string
+          id: string
+          joined_at: string
+          status: Database["public"]["Enums"]["approval_status"]
           user_id: string
         }
         Insert: {
-          event_id: string
+          club_id: string
           id?: string
-          scanned_at?: string
+          joined_at?: string
+          status?: Database["public"]["Enums"]["approval_status"]
           user_id: string
         }
         Update: {
-          event_id?: string
+          club_id?: string
           id?: string
-          scanned_at?: string
+          joined_at?: string
+          status?: Database["public"]["Enums"]["approval_status"]
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "attendance_event_id_fkey"
-            columns: ["event_id"]
+            foreignKeyName: "club_memberships_club_id_fkey"
+            columns: ["club_id"]
             isOneToOne: false
-            referencedRelation: "qr_events"
+            referencedRelation: "clubs"
             referencedColumns: ["id"]
           },
         ]
+      }
+      clubs: {
+        Row: {
+          category: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          category?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          category?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
       }
       community_posts: {
         Row: {
@@ -106,6 +175,324 @@ export type Database = {
           id?: string
           image_url?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      complaints: {
+        Row: {
+          attachment_url: string | null
+          body: string
+          created_at: string
+          id: string
+          reviewed_by: string | null
+          reviewer_note: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          reviewed_by?: string | null
+          reviewer_note?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          reviewed_by?: string | null
+          reviewer_note?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      corporate_firms: {
+        Row: {
+          applicant_role: string | null
+          company_name: string
+          created_at: string
+          csr_focus: string | null
+          email: string
+          id: string
+          industry: string | null
+          num_staff: number | null
+          owner_id: string
+          phone: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          updated_at: string
+        }
+        Insert: {
+          applicant_role?: string | null
+          company_name: string
+          created_at?: string
+          csr_focus?: string | null
+          email: string
+          id?: string
+          industry?: string | null
+          num_staff?: number | null
+          owner_id: string
+          phone?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          updated_at?: string
+        }
+        Update: {
+          applicant_role?: string | null
+          company_name?: string
+          created_at?: string
+          csr_focus?: string | null
+          email?: string
+          id?: string
+          industry?: string | null
+          num_staff?: number | null
+          owner_id?: string
+          phone?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          resource_url: string | null
+          skill_id: string | null
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          resource_url?: string | null
+          skill_id?: string | null
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          resource_url?: string | null
+          skill_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_change_requests: {
+        Row: {
+          created_at: string
+          id: string
+          new_fingerprint: string
+          new_label: string | null
+          path: string
+          reason: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          new_fingerprint: string
+          new_label?: string | null
+          path?: string
+          reason: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          new_fingerprint?: string
+          new_label?: string | null
+          path?: string
+          reason?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      event_attendance: {
+        Row: {
+          clock_in_at: string | null
+          clock_in_lat: number | null
+          clock_in_lng: number | null
+          clock_out_at: string | null
+          clock_out_lat: number | null
+          clock_out_lng: number | null
+          event_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          clock_in_at?: string | null
+          clock_in_lat?: number | null
+          clock_in_lng?: number | null
+          clock_out_at?: string | null
+          clock_out_lat?: number | null
+          clock_out_lng?: number | null
+          event_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          clock_in_at?: string | null
+          clock_in_lat?: number | null
+          clock_in_lng?: number | null
+          clock_out_at?: string | null
+          clock_out_lat?: number | null
+          clock_out_lng?: number | null
+          event_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendance_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          attendance_locked: boolean
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ends_at: string
+          id: string
+          latitude: number
+          locked_by: string | null
+          locked_by_role: Database["public"]["Enums"]["app_role"] | null
+          longitude: number
+          name: string
+          radius_m: number
+          starts_at: string
+          updated_at: string
+        }
+        Insert: {
+          attendance_locked?: boolean
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at: string
+          id?: string
+          latitude: number
+          locked_by?: string | null
+          locked_by_role?: Database["public"]["Enums"]["app_role"] | null
+          longitude: number
+          name: string
+          radius_m?: number
+          starts_at: string
+          updated_at?: string
+        }
+        Update: {
+          attendance_locked?: boolean
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string
+          id?: string
+          latitude?: number
+          locked_by?: string | null
+          locked_by_role?: Database["public"]["Enums"]["app_role"] | null
+          longitude?: number
+          name?: string
+          radius_m?: number
+          starts_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      firm_documents: {
+        Row: {
+          doc_name: string
+          firm_id: string
+          id: string
+          uploaded_at: string
+          url: string
+        }
+        Insert: {
+          doc_name: string
+          firm_id: string
+          id?: string
+          uploaded_at?: string
+          url: string
+        }
+        Update: {
+          doc_name?: string
+          firm_id?: string
+          id?: string
+          uploaded_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "firm_documents_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_firms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      impact_metric_changes: {
+        Row: {
+          changed_at: string
+          changed_by: string
+          id: string
+          metric_id: string
+          new_value: number | null
+          old_value: number | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by: string
+          id?: string
+          metric_id: string
+          new_value?: number | null
+          old_value?: number | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string
+          id?: string
+          metric_id?: string
+          new_value?: number | null
+          old_value?: number | null
         }
         Relationships: []
       }
@@ -138,6 +525,50 @@ export type Database = {
           value?: number
         }
         Relationships: []
+      }
+      job_postings: {
+        Row: {
+          created_at: string
+          description: string
+          firm_id: string
+          id: string
+          is_active: boolean
+          job_type: string
+          location: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          firm_id: string
+          id?: string
+          is_active?: boolean
+          job_type?: string
+          location?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          firm_id?: string
+          id?: string
+          is_active?: boolean
+          job_type?: string
+          location?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_postings_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_firms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       news_articles: {
         Row: {
@@ -233,73 +664,156 @@ export type Database = {
       }
       profiles: {
         Row: {
+          applicant_role: string | null
           avatar_url: string | null
           batch: string | null
           cds_group: string | null
           created_at: string
+          csr_focus: string | null
           device_fingerprint: string | null
+          firm_company_name: string | null
           full_name: string
           id: string
+          industry: string | null
+          num_staff: number | null
           phone: string | null
+          portal_number: string | null
           state_code: string | null
           stream: string | null
           updated_at: string
         }
         Insert: {
+          applicant_role?: string | null
           avatar_url?: string | null
           batch?: string | null
           cds_group?: string | null
           created_at?: string
+          csr_focus?: string | null
           device_fingerprint?: string | null
+          firm_company_name?: string | null
           full_name: string
           id: string
+          industry?: string | null
+          num_staff?: number | null
           phone?: string | null
+          portal_number?: string | null
           state_code?: string | null
           stream?: string | null
           updated_at?: string
         }
         Update: {
+          applicant_role?: string | null
           avatar_url?: string | null
           batch?: string | null
           cds_group?: string | null
           created_at?: string
+          csr_focus?: string | null
           device_fingerprint?: string | null
+          firm_company_name?: string | null
           full_name?: string
           id?: string
+          industry?: string | null
+          num_staff?: number | null
           phone?: string | null
+          portal_number?: string | null
           state_code?: string | null
           stream?: string | null
           updated_at?: string
         }
         Relationships: []
       }
-      qr_events: {
+      skills: {
         Row: {
-          code: string
+          category: string | null
           created_at: string
-          created_by: string | null
-          event_name: string
-          expires_at: string
+          description: string | null
           id: string
-          rotates_at: string
+          is_active: boolean
+          name: string
         }
         Insert: {
-          code: string
+          category?: string | null
           created_at?: string
-          created_by?: string | null
-          event_name: string
-          expires_at?: string
+          description?: string | null
           id?: string
-          rotates_at?: string
+          is_active?: boolean
+          name: string
         }
         Update: {
-          code?: string
+          category?: string | null
           created_at?: string
-          created_by?: string | null
-          event_name?: string
-          expires_at?: string
+          description?: string | null
           id?: string
-          rotates_at?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      tutor_applications: {
+        Row: {
+          created_at: string
+          id: string
+          pitch: string
+          reviewed_by: string | null
+          skill_id: string
+          status: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pitch: string
+          reviewed_by?: string | null
+          skill_id: string
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pitch?: string
+          reviewed_by?: string | null
+          skill_id?: string
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tutor_applications_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_devices: {
+        Row: {
+          created_at: string
+          fingerprint: string
+          id: string
+          is_active: boolean
+          label: string | null
+          last_seen: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fingerprint: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_seen?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fingerprint?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_seen?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -341,9 +855,18 @@ export type Database = {
       }
       is_admin_or_lgi: { Args: { _user_id: string }; Returns: boolean }
       is_lgi: { Args: { _user_id: string }; Returns: boolean }
+      set_event_lock: {
+        Args: { _event_id: string; _lock: boolean }
+        Returns: undefined
+      }
     }
     Enums: {
-      app_role: "corps_member" | "admin" | "lgi" | "media_editor"
+      app_role:
+        | "corps_member"
+        | "admin"
+        | "lgi"
+        | "media_editor"
+        | "corporate_firm"
       approval_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -472,7 +995,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["corps_member", "admin", "lgi", "media_editor"],
+      app_role: [
+        "corps_member",
+        "admin",
+        "lgi",
+        "media_editor",
+        "corporate_firm",
+      ],
       approval_status: ["pending", "approved", "rejected"],
     },
   },
