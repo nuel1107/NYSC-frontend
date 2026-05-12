@@ -37,7 +37,17 @@ import { Route as AuthenticatedCorpsHubRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCorpsComplaintsRouteImport } from './routes/_authenticated/corps/complaints'
 import { Route as AuthenticatedCorpsCommunityRouteImport } from './routes/_authenticated/corps/community'
 import { Route as AuthenticatedCorpsClubsRouteImport } from './routes/_authenticated/corps/clubs'
+import { Route as AuthenticatedAdminSaedRouteImport } from './routes/_authenticated/admin/saed'
+import { Route as AuthenticatedAdminRankingsRouteImport } from './routes/_authenticated/admin/rankings'
 import { Route as AuthenticatedAdminQrRouteImport } from './routes/_authenticated/admin/qr'
+import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
+import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin/news'
+import { Route as AuthenticatedAdminMetricsRouteImport } from './routes/_authenticated/admin/metrics'
+import { Route as AuthenticatedAdminHubRouteImport } from './routes/_authenticated/admin/hub'
+import { Route as AuthenticatedAdminFirmsRouteImport } from './routes/_authenticated/admin/firms'
+import { Route as AuthenticatedAdminCommunityRouteImport } from './routes/_authenticated/admin/community'
+import { Route as AuthenticatedAdminClubsRouteImport } from './routes/_authenticated/admin/clubs'
+import { Route as AuthenticatedAdminAbsencesRouteImport } from './routes/_authenticated/admin/absences'
 
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
@@ -184,11 +194,66 @@ const AuthenticatedCorpsClubsRoute = AuthenticatedCorpsClubsRouteImport.update({
   path: '/clubs',
   getParentRoute: () => AuthenticatedCorpsRoute,
 } as any)
+const AuthenticatedAdminSaedRoute = AuthenticatedAdminSaedRouteImport.update({
+  id: '/saed',
+  path: '/saed',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminRankingsRoute =
+  AuthenticatedAdminRankingsRouteImport.update({
+    id: '/rankings',
+    path: '/rankings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminQrRoute = AuthenticatedAdminQrRouteImport.update({
   id: '/qr',
   path: '/qr',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminNotificationsRoute =
+  AuthenticatedAdminNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminNewsRoute = AuthenticatedAdminNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminMetricsRoute =
+  AuthenticatedAdminMetricsRouteImport.update({
+    id: '/metrics',
+    path: '/metrics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminHubRoute = AuthenticatedAdminHubRouteImport.update({
+  id: '/hub',
+  path: '/hub',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminFirmsRoute = AuthenticatedAdminFirmsRouteImport.update({
+  id: '/firms',
+  path: '/firms',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminCommunityRoute =
+  AuthenticatedAdminCommunityRouteImport.update({
+    id: '/community',
+    path: '/community',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminClubsRoute = AuthenticatedAdminClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAbsencesRoute =
+  AuthenticatedAdminAbsencesRouteImport.update({
+    id: '/absences',
+    path: '/absences',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -200,7 +265,17 @@ export interface FileRoutesByFullPath {
   '/firm': typeof AuthenticatedFirmRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
+  '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/admin/clubs': typeof AuthenticatedAdminClubsRoute
+  '/admin/community': typeof AuthenticatedAdminCommunityRoute
+  '/admin/firms': typeof AuthenticatedAdminFirmsRoute
+  '/admin/hub': typeof AuthenticatedAdminHubRoute
+  '/admin/metrics': typeof AuthenticatedAdminMetricsRoute
+  '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/admin/rankings': typeof AuthenticatedAdminRankingsRoute
+  '/admin/saed': typeof AuthenticatedAdminSaedRoute
   '/corps/clubs': typeof AuthenticatedCorpsClubsRoute
   '/corps/community': typeof AuthenticatedCorpsCommunityRoute
   '/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
@@ -225,7 +300,17 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
+  '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/admin/clubs': typeof AuthenticatedAdminClubsRoute
+  '/admin/community': typeof AuthenticatedAdminCommunityRoute
+  '/admin/firms': typeof AuthenticatedAdminFirmsRoute
+  '/admin/hub': typeof AuthenticatedAdminHubRoute
+  '/admin/metrics': typeof AuthenticatedAdminMetricsRoute
+  '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/admin/rankings': typeof AuthenticatedAdminRankingsRoute
+  '/admin/saed': typeof AuthenticatedAdminSaedRoute
   '/corps/clubs': typeof AuthenticatedCorpsClubsRoute
   '/corps/community': typeof AuthenticatedCorpsCommunityRoute
   '/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
@@ -257,7 +342,17 @@ export interface FileRoutesById {
   '/_authenticated/firm': typeof AuthenticatedFirmRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
+  '/_authenticated/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/_authenticated/admin/clubs': typeof AuthenticatedAdminClubsRoute
+  '/_authenticated/admin/community': typeof AuthenticatedAdminCommunityRoute
+  '/_authenticated/admin/firms': typeof AuthenticatedAdminFirmsRoute
+  '/_authenticated/admin/hub': typeof AuthenticatedAdminHubRoute
+  '/_authenticated/admin/metrics': typeof AuthenticatedAdminMetricsRoute
+  '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/_authenticated/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/_authenticated/admin/rankings': typeof AuthenticatedAdminRankingsRoute
+  '/_authenticated/admin/saed': typeof AuthenticatedAdminSaedRoute
   '/_authenticated/corps/clubs': typeof AuthenticatedCorpsClubsRoute
   '/_authenticated/corps/community': typeof AuthenticatedCorpsCommunityRoute
   '/_authenticated/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
@@ -289,7 +384,17 @@ export interface FileRouteTypes {
     | '/firm'
     | '/lgi'
     | '/media'
+    | '/admin/absences'
+    | '/admin/clubs'
+    | '/admin/community'
+    | '/admin/firms'
+    | '/admin/hub'
+    | '/admin/metrics'
+    | '/admin/news'
+    | '/admin/notifications'
     | '/admin/qr'
+    | '/admin/rankings'
+    | '/admin/saed'
     | '/corps/clubs'
     | '/corps/community'
     | '/corps/complaints'
@@ -314,7 +419,17 @@ export interface FileRouteTypes {
     | '/auth'
     | '/device-change'
     | '/news'
+    | '/admin/absences'
+    | '/admin/clubs'
+    | '/admin/community'
+    | '/admin/firms'
+    | '/admin/hub'
+    | '/admin/metrics'
+    | '/admin/news'
+    | '/admin/notifications'
     | '/admin/qr'
+    | '/admin/rankings'
+    | '/admin/saed'
     | '/corps/clubs'
     | '/corps/community'
     | '/corps/complaints'
@@ -345,7 +460,17 @@ export interface FileRouteTypes {
     | '/_authenticated/firm'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
+    | '/_authenticated/admin/absences'
+    | '/_authenticated/admin/clubs'
+    | '/_authenticated/admin/community'
+    | '/_authenticated/admin/firms'
+    | '/_authenticated/admin/hub'
+    | '/_authenticated/admin/metrics'
+    | '/_authenticated/admin/news'
+    | '/_authenticated/admin/notifications'
     | '/_authenticated/admin/qr'
+    | '/_authenticated/admin/rankings'
+    | '/_authenticated/admin/saed'
     | '/_authenticated/corps/clubs'
     | '/_authenticated/corps/community'
     | '/_authenticated/corps/complaints'
@@ -572,6 +697,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCorpsClubsRouteImport
       parentRoute: typeof AuthenticatedCorpsRoute
     }
+    '/_authenticated/admin/saed': {
+      id: '/_authenticated/admin/saed'
+      path: '/saed'
+      fullPath: '/admin/saed'
+      preLoaderRoute: typeof AuthenticatedAdminSaedRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/rankings': {
+      id: '/_authenticated/admin/rankings'
+      path: '/rankings'
+      fullPath: '/admin/rankings'
+      preLoaderRoute: typeof AuthenticatedAdminRankingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/qr': {
       id: '/_authenticated/admin/qr'
       path: '/qr'
@@ -579,16 +718,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminQrRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/notifications': {
+      id: '/_authenticated/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/news': {
+      id: '/_authenticated/admin/news'
+      path: '/news'
+      fullPath: '/admin/news'
+      preLoaderRoute: typeof AuthenticatedAdminNewsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/metrics': {
+      id: '/_authenticated/admin/metrics'
+      path: '/metrics'
+      fullPath: '/admin/metrics'
+      preLoaderRoute: typeof AuthenticatedAdminMetricsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/hub': {
+      id: '/_authenticated/admin/hub'
+      path: '/hub'
+      fullPath: '/admin/hub'
+      preLoaderRoute: typeof AuthenticatedAdminHubRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/firms': {
+      id: '/_authenticated/admin/firms'
+      path: '/firms'
+      fullPath: '/admin/firms'
+      preLoaderRoute: typeof AuthenticatedAdminFirmsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/community': {
+      id: '/_authenticated/admin/community'
+      path: '/community'
+      fullPath: '/admin/community'
+      preLoaderRoute: typeof AuthenticatedAdminCommunityRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/clubs': {
+      id: '/_authenticated/admin/clubs'
+      path: '/clubs'
+      fullPath: '/admin/clubs'
+      preLoaderRoute: typeof AuthenticatedAdminClubsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/absences': {
+      id: '/_authenticated/admin/absences'
+      path: '/absences'
+      fullPath: '/admin/absences'
+      preLoaderRoute: typeof AuthenticatedAdminAbsencesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAbsencesRoute: typeof AuthenticatedAdminAbsencesRoute
+  AuthenticatedAdminClubsRoute: typeof AuthenticatedAdminClubsRoute
+  AuthenticatedAdminCommunityRoute: typeof AuthenticatedAdminCommunityRoute
+  AuthenticatedAdminFirmsRoute: typeof AuthenticatedAdminFirmsRoute
+  AuthenticatedAdminHubRoute: typeof AuthenticatedAdminHubRoute
+  AuthenticatedAdminMetricsRoute: typeof AuthenticatedAdminMetricsRoute
+  AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
+  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
   AuthenticatedAdminQrRoute: typeof AuthenticatedAdminQrRoute
+  AuthenticatedAdminRankingsRoute: typeof AuthenticatedAdminRankingsRoute
+  AuthenticatedAdminSaedRoute: typeof AuthenticatedAdminSaedRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAbsencesRoute: AuthenticatedAdminAbsencesRoute,
+  AuthenticatedAdminClubsRoute: AuthenticatedAdminClubsRoute,
+  AuthenticatedAdminCommunityRoute: AuthenticatedAdminCommunityRoute,
+  AuthenticatedAdminFirmsRoute: AuthenticatedAdminFirmsRoute,
+  AuthenticatedAdminHubRoute: AuthenticatedAdminHubRoute,
+  AuthenticatedAdminMetricsRoute: AuthenticatedAdminMetricsRoute,
+  AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
+  AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
   AuthenticatedAdminQrRoute: AuthenticatedAdminQrRoute,
+  AuthenticatedAdminRankingsRoute: AuthenticatedAdminRankingsRoute,
+  AuthenticatedAdminSaedRoute: AuthenticatedAdminSaedRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 

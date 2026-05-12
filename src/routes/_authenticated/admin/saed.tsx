@@ -69,7 +69,7 @@ function AdminSaed() {
   };
   const delCourse = async (c: Course) => { if (confirm("Delete?")) { await supabase.from("courses").delete().eq("id", c.id); void load(); } };
 
-  const decideApp = async (a: App, status: string) => {
+  const decideApp = async (a: App, status: "approved" | "rejected") => {
     await supabase.from("tutor_applications").update({ status, reviewed_by: user?.id ?? null }).eq("id", a.id);
     await supabase.from("notifications").insert({ title: `Tutor application ${status}`, body: "", target_user_id: a.user_id });
     void load();

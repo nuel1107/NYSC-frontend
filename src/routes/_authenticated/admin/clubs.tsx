@@ -52,7 +52,7 @@ function AdminClubs() {
   };
   const delClub = async (c: Club) => { if (confirm("Delete club?")) { await supabase.from("clubs").delete().eq("id", c.id); void load(); } };
 
-  const decide = async (m: Mem, status: string) => {
+  const decide = async (m: Mem, status: "approved" | "rejected") => {
     await supabase.from("club_memberships").update({ status }).eq("id", m.id);
     void load();
   };
