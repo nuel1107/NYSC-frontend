@@ -24,6 +24,7 @@ import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFirmIndexRouteImport } from './routes/_authenticated/firm/index'
 import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedLgiNotificationsRouteImport } from './routes/_authenticated/lgi/notifications'
 import { Route as AuthenticatedLgiMetricsRouteImport } from './routes/_authenticated/lgi/metrics'
 import { Route as AuthenticatedLgiAuditRouteImport } from './routes/_authenticated/lgi/audit'
 import { Route as AuthenticatedLgiAttendanceRouteImport } from './routes/_authenticated/lgi/attendance'
@@ -125,6 +126,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedLgiNotificationsRoute =
+  AuthenticatedLgiNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedLgiRoute,
+  } as any)
 const AuthenticatedLgiMetricsRoute = AuthenticatedLgiMetricsRouteImport.update({
   id: '/metrics',
   path: '/metrics',
@@ -303,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/lgi/audit': typeof AuthenticatedLgiAuditRoute
   '/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
+  '/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/corps/': typeof AuthenticatedCorpsIndexRoute
   '/firm/': typeof AuthenticatedFirmIndexRoute
@@ -340,6 +348,7 @@ export interface FileRoutesByTo {
   '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/lgi/audit': typeof AuthenticatedLgiAuditRoute
   '/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
+  '/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
   '/firm': typeof AuthenticatedFirmIndexRoute
@@ -384,6 +393,7 @@ export interface FileRoutesById {
   '/_authenticated/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/_authenticated/lgi/audit': typeof AuthenticatedLgiAuditRoute
   '/_authenticated/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
+  '/_authenticated/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
   '/_authenticated/firm/': typeof AuthenticatedFirmIndexRoute
@@ -428,6 +438,7 @@ export interface FileRouteTypes {
     | '/lgi/attendance'
     | '/lgi/audit'
     | '/lgi/metrics'
+    | '/lgi/notifications'
     | '/admin/'
     | '/corps/'
     | '/firm/'
@@ -465,6 +476,7 @@ export interface FileRouteTypes {
     | '/lgi/attendance'
     | '/lgi/audit'
     | '/lgi/metrics'
+    | '/lgi/notifications'
     | '/admin'
     | '/corps'
     | '/firm'
@@ -508,6 +520,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lgi/attendance'
     | '/_authenticated/lgi/audit'
     | '/_authenticated/lgi/metrics'
+    | '/_authenticated/lgi/notifications'
     | '/_authenticated/admin/'
     | '/_authenticated/corps/'
     | '/_authenticated/firm/'
@@ -629,6 +642,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/lgi/notifications': {
+      id: '/_authenticated/lgi/notifications'
+      path: '/notifications'
+      fullPath: '/lgi/notifications'
+      preLoaderRoute: typeof AuthenticatedLgiNotificationsRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
     }
     '/_authenticated/lgi/metrics': {
       id: '/_authenticated/lgi/metrics'
@@ -897,6 +917,7 @@ interface AuthenticatedLgiRouteChildren {
   AuthenticatedLgiAttendanceRoute: typeof AuthenticatedLgiAttendanceRoute
   AuthenticatedLgiAuditRoute: typeof AuthenticatedLgiAuditRoute
   AuthenticatedLgiMetricsRoute: typeof AuthenticatedLgiMetricsRoute
+  AuthenticatedLgiNotificationsRoute: typeof AuthenticatedLgiNotificationsRoute
   AuthenticatedLgiIndexRoute: typeof AuthenticatedLgiIndexRoute
 }
 
@@ -905,6 +926,7 @@ const AuthenticatedLgiRouteChildren: AuthenticatedLgiRouteChildren = {
   AuthenticatedLgiAttendanceRoute: AuthenticatedLgiAttendanceRoute,
   AuthenticatedLgiAuditRoute: AuthenticatedLgiAuditRoute,
   AuthenticatedLgiMetricsRoute: AuthenticatedLgiMetricsRoute,
+  AuthenticatedLgiNotificationsRoute: AuthenticatedLgiNotificationsRoute,
   AuthenticatedLgiIndexRoute: AuthenticatedLgiIndexRoute,
 }
 
@@ -952,13 +974,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
