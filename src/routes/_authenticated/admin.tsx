@@ -11,7 +11,7 @@ function AdminLayout() {
   const { primaryRole, loading } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!loading && primaryRole && primaryRole !== "admin") {
+    if (!loading && primaryRole && primaryRole !== "admin" && primaryRole !== "lgi") {
       void navigate({ to: rolePortalPath(primaryRole) });
     }
   }, [primaryRole, loading, navigate]);
