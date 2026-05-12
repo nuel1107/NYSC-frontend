@@ -28,8 +28,8 @@ export const adminNav: NavItem[] = [
 export const lgiNav: NavItem[] = [
   { to: "/lgi", label: "Control", icon: Shield },
   { to: "/lgi/approvals", label: "Approvals", icon: UserCheck },
+  { to: "/lgi/attendance", label: "Attendance", icon: QrCode },
   { to: "/lgi/metrics", label: "Metrics", icon: BarChart3 },
-  { to: "/lgi/news", label: "News", icon: Newspaper },
 ];
 
 export const mediaNav: NavItem[] = [
