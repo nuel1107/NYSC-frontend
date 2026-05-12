@@ -22,7 +22,10 @@ import { Route as AuthenticatedMediaIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticated/lgi/index'
 import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedLgiAttendanceRouteImport } from './routes/_authenticated/lgi/attendance'
 import { Route as AuthenticatedLgiApprovalsRouteImport } from './routes/_authenticated/lgi/approvals'
+import { Route as AuthenticatedCorpsScanRouteImport } from './routes/_authenticated/corps/scan'
+import { Route as AuthenticatedAdminQrRouteImport } from './routes/_authenticated/admin/qr'
 
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
@@ -88,12 +91,28 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedLgiAttendanceRoute =
+  AuthenticatedLgiAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedLgiRoute,
+  } as any)
 const AuthenticatedLgiApprovalsRoute =
   AuthenticatedLgiApprovalsRouteImport.update({
     id: '/approvals',
     path: '/approvals',
     getParentRoute: () => AuthenticatedLgiRoute,
   } as any)
+const AuthenticatedCorpsScanRoute = AuthenticatedCorpsScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedAdminQrRoute = AuthenticatedAdminQrRouteImport.update({
+  id: '/qr',
+  path: '/qr',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -104,7 +123,10 @@ export interface FileRoutesByFullPath {
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
+  '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/corps/scan': typeof AuthenticatedCorpsScanRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
+  '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/corps/': typeof AuthenticatedCorpsIndexRoute
   '/lgi/': typeof AuthenticatedLgiIndexRoute
@@ -115,7 +137,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
+  '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/corps/scan': typeof AuthenticatedCorpsScanRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
+  '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
   '/lgi': typeof AuthenticatedLgiIndexRoute
@@ -132,7 +157,10 @@ export interface FileRoutesById {
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
+  '/_authenticated/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/_authenticated/corps/scan': typeof AuthenticatedCorpsScanRoute
   '/_authenticated/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
+  '/_authenticated/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
   '/_authenticated/lgi/': typeof AuthenticatedLgiIndexRoute
@@ -149,7 +177,10 @@ export interface FileRouteTypes {
     | '/corps'
     | '/lgi'
     | '/media'
+    | '/admin/qr'
+    | '/corps/scan'
     | '/lgi/approvals'
+    | '/lgi/attendance'
     | '/admin/'
     | '/corps/'
     | '/lgi/'
@@ -160,7 +191,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/device-change'
     | '/news'
+    | '/admin/qr'
+    | '/corps/scan'
     | '/lgi/approvals'
+    | '/lgi/attendance'
     | '/admin'
     | '/corps'
     | '/lgi'
@@ -176,7 +210,10 @@ export interface FileRouteTypes {
     | '/_authenticated/corps'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
+    | '/_authenticated/admin/qr'
+    | '/_authenticated/corps/scan'
     | '/_authenticated/lgi/approvals'
+    | '/_authenticated/lgi/attendance'
     | '/_authenticated/admin/'
     | '/_authenticated/corps/'
     | '/_authenticated/lgi/'
@@ -284,6 +321,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/lgi/attendance': {
+      id: '/_authenticated/lgi/attendance'
+      path: '/attendance'
+      fullPath: '/lgi/attendance'
+      preLoaderRoute: typeof AuthenticatedLgiAttendanceRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
+    }
     '/_authenticated/lgi/approvals': {
       id: '/_authenticated/lgi/approvals'
       path: '/approvals'
@@ -291,14 +335,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLgiApprovalsRouteImport
       parentRoute: typeof AuthenticatedLgiRoute
     }
+    '/_authenticated/corps/scan': {
+      id: '/_authenticated/corps/scan'
+      path: '/scan'
+      fullPath: '/corps/scan'
+      preLoaderRoute: typeof AuthenticatedCorpsScanRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/admin/qr': {
+      id: '/_authenticated/admin/qr'
+      path: '/qr'
+      fullPath: '/admin/qr'
+      preLoaderRoute: typeof AuthenticatedAdminQrRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminQrRoute: typeof AuthenticatedAdminQrRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminQrRoute: AuthenticatedAdminQrRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
@@ -306,10 +366,12 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedCorpsRouteChildren {
+  AuthenticatedCorpsScanRoute: typeof AuthenticatedCorpsScanRoute
   AuthenticatedCorpsIndexRoute: typeof AuthenticatedCorpsIndexRoute
 }
 
 const AuthenticatedCorpsRouteChildren: AuthenticatedCorpsRouteChildren = {
+  AuthenticatedCorpsScanRoute: AuthenticatedCorpsScanRoute,
   AuthenticatedCorpsIndexRoute: AuthenticatedCorpsIndexRoute,
 }
 
@@ -318,11 +380,13 @@ const AuthenticatedCorpsRouteWithChildren =
 
 interface AuthenticatedLgiRouteChildren {
   AuthenticatedLgiApprovalsRoute: typeof AuthenticatedLgiApprovalsRoute
+  AuthenticatedLgiAttendanceRoute: typeof AuthenticatedLgiAttendanceRoute
   AuthenticatedLgiIndexRoute: typeof AuthenticatedLgiIndexRoute
 }
 
 const AuthenticatedLgiRouteChildren: AuthenticatedLgiRouteChildren = {
   AuthenticatedLgiApprovalsRoute: AuthenticatedLgiApprovalsRoute,
+  AuthenticatedLgiAttendanceRoute: AuthenticatedLgiAttendanceRoute,
   AuthenticatedLgiIndexRoute: AuthenticatedLgiIndexRoute,
 }
 
