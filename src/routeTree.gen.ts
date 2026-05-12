@@ -16,14 +16,17 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedMediaRouteImport } from './routes/_authenticated/media'
 import { Route as AuthenticatedLgiRouteImport } from './routes/_authenticated/lgi'
+import { Route as AuthenticatedFirmRouteImport } from './routes/_authenticated/firm'
 import { Route as AuthenticatedCorpsRouteImport } from './routes/_authenticated/corps'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMediaIndexRouteImport } from './routes/_authenticated/media/index'
 import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticated/lgi/index'
+import { Route as AuthenticatedFirmIndexRouteImport } from './routes/_authenticated/firm/index'
 import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedLgiAttendanceRouteImport } from './routes/_authenticated/lgi/attendance'
 import { Route as AuthenticatedLgiApprovalsRouteImport } from './routes/_authenticated/lgi/approvals'
+import { Route as AuthenticatedFirmJobsRouteImport } from './routes/_authenticated/firm/jobs'
 import { Route as AuthenticatedCorpsScanRouteImport } from './routes/_authenticated/corps/scan'
 import { Route as AuthenticatedAdminQrRouteImport } from './routes/_authenticated/admin/qr'
 
@@ -61,6 +64,11 @@ const AuthenticatedLgiRoute = AuthenticatedLgiRouteImport.update({
   path: '/lgi',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFirmRoute = AuthenticatedFirmRouteImport.update({
+  id: '/firm',
+  path: '/firm',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCorpsRoute = AuthenticatedCorpsRouteImport.update({
   id: '/corps',
   path: '/corps',
@@ -80,6 +88,11 @@ const AuthenticatedLgiIndexRoute = AuthenticatedLgiIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedLgiRoute,
+} as any)
+const AuthenticatedFirmIndexRoute = AuthenticatedFirmIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedFirmRoute,
 } as any)
 const AuthenticatedCorpsIndexRoute = AuthenticatedCorpsIndexRouteImport.update({
   id: '/',
@@ -103,6 +116,11 @@ const AuthenticatedLgiApprovalsRoute =
     path: '/approvals',
     getParentRoute: () => AuthenticatedLgiRoute,
   } as any)
+const AuthenticatedFirmJobsRoute = AuthenticatedFirmJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedFirmRoute,
+} as any)
 const AuthenticatedCorpsScanRoute = AuthenticatedCorpsScanRouteImport.update({
   id: '/scan',
   path: '/scan',
@@ -121,14 +139,17 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
+  '/firm': typeof AuthenticatedFirmRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
   '/admin/qr': typeof AuthenticatedAdminQrRoute
   '/corps/scan': typeof AuthenticatedCorpsScanRoute
+  '/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/corps/': typeof AuthenticatedCorpsIndexRoute
+  '/firm/': typeof AuthenticatedFirmIndexRoute
   '/lgi/': typeof AuthenticatedLgiIndexRoute
   '/media/': typeof AuthenticatedMediaIndexRoute
 }
@@ -139,10 +160,12 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/admin/qr': typeof AuthenticatedAdminQrRoute
   '/corps/scan': typeof AuthenticatedCorpsScanRoute
+  '/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
+  '/firm': typeof AuthenticatedFirmIndexRoute
   '/lgi': typeof AuthenticatedLgiIndexRoute
   '/media': typeof AuthenticatedMediaIndexRoute
 }
@@ -155,14 +178,17 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
+  '/_authenticated/firm': typeof AuthenticatedFirmRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
   '/_authenticated/admin/qr': typeof AuthenticatedAdminQrRoute
   '/_authenticated/corps/scan': typeof AuthenticatedCorpsScanRoute
+  '/_authenticated/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/_authenticated/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/_authenticated/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
+  '/_authenticated/firm/': typeof AuthenticatedFirmIndexRoute
   '/_authenticated/lgi/': typeof AuthenticatedLgiIndexRoute
   '/_authenticated/media/': typeof AuthenticatedMediaIndexRoute
 }
@@ -175,14 +201,17 @@ export interface FileRouteTypes {
     | '/news'
     | '/admin'
     | '/corps'
+    | '/firm'
     | '/lgi'
     | '/media'
     | '/admin/qr'
     | '/corps/scan'
+    | '/firm/jobs'
     | '/lgi/approvals'
     | '/lgi/attendance'
     | '/admin/'
     | '/corps/'
+    | '/firm/'
     | '/lgi/'
     | '/media/'
   fileRoutesByTo: FileRoutesByTo
@@ -193,10 +222,12 @@ export interface FileRouteTypes {
     | '/news'
     | '/admin/qr'
     | '/corps/scan'
+    | '/firm/jobs'
     | '/lgi/approvals'
     | '/lgi/attendance'
     | '/admin'
     | '/corps'
+    | '/firm'
     | '/lgi'
     | '/media'
   id:
@@ -208,14 +239,17 @@ export interface FileRouteTypes {
     | '/news'
     | '/_authenticated/admin'
     | '/_authenticated/corps'
+    | '/_authenticated/firm'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
     | '/_authenticated/admin/qr'
     | '/_authenticated/corps/scan'
+    | '/_authenticated/firm/jobs'
     | '/_authenticated/lgi/approvals'
     | '/_authenticated/lgi/attendance'
     | '/_authenticated/admin/'
     | '/_authenticated/corps/'
+    | '/_authenticated/firm/'
     | '/_authenticated/lgi/'
     | '/_authenticated/media/'
   fileRoutesById: FileRoutesById
@@ -279,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLgiRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/firm': {
+      id: '/_authenticated/firm'
+      path: '/firm'
+      fullPath: '/firm'
+      preLoaderRoute: typeof AuthenticatedFirmRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/corps': {
       id: '/_authenticated/corps'
       path: '/corps'
@@ -307,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLgiIndexRouteImport
       parentRoute: typeof AuthenticatedLgiRoute
     }
+    '/_authenticated/firm/': {
+      id: '/_authenticated/firm/'
+      path: '/'
+      fullPath: '/firm/'
+      preLoaderRoute: typeof AuthenticatedFirmIndexRouteImport
+      parentRoute: typeof AuthenticatedFirmRoute
+    }
     '/_authenticated/corps/': {
       id: '/_authenticated/corps/'
       path: '/'
@@ -334,6 +382,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/lgi/approvals'
       preLoaderRoute: typeof AuthenticatedLgiApprovalsRouteImport
       parentRoute: typeof AuthenticatedLgiRoute
+    }
+    '/_authenticated/firm/jobs': {
+      id: '/_authenticated/firm/jobs'
+      path: '/jobs'
+      fullPath: '/firm/jobs'
+      preLoaderRoute: typeof AuthenticatedFirmJobsRouteImport
+      parentRoute: typeof AuthenticatedFirmRoute
     }
     '/_authenticated/corps/scan': {
       id: '/_authenticated/corps/scan'
@@ -378,6 +433,19 @@ const AuthenticatedCorpsRouteChildren: AuthenticatedCorpsRouteChildren = {
 const AuthenticatedCorpsRouteWithChildren =
   AuthenticatedCorpsRoute._addFileChildren(AuthenticatedCorpsRouteChildren)
 
+interface AuthenticatedFirmRouteChildren {
+  AuthenticatedFirmJobsRoute: typeof AuthenticatedFirmJobsRoute
+  AuthenticatedFirmIndexRoute: typeof AuthenticatedFirmIndexRoute
+}
+
+const AuthenticatedFirmRouteChildren: AuthenticatedFirmRouteChildren = {
+  AuthenticatedFirmJobsRoute: AuthenticatedFirmJobsRoute,
+  AuthenticatedFirmIndexRoute: AuthenticatedFirmIndexRoute,
+}
+
+const AuthenticatedFirmRouteWithChildren =
+  AuthenticatedFirmRoute._addFileChildren(AuthenticatedFirmRouteChildren)
+
 interface AuthenticatedLgiRouteChildren {
   AuthenticatedLgiApprovalsRoute: typeof AuthenticatedLgiApprovalsRoute
   AuthenticatedLgiAttendanceRoute: typeof AuthenticatedLgiAttendanceRoute
@@ -407,6 +475,7 @@ const AuthenticatedMediaRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedCorpsRoute: typeof AuthenticatedCorpsRouteWithChildren
+  AuthenticatedFirmRoute: typeof AuthenticatedFirmRouteWithChildren
   AuthenticatedLgiRoute: typeof AuthenticatedLgiRouteWithChildren
   AuthenticatedMediaRoute: typeof AuthenticatedMediaRouteWithChildren
 }
@@ -414,6 +483,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedCorpsRoute: AuthenticatedCorpsRouteWithChildren,
+  AuthenticatedFirmRoute: AuthenticatedFirmRouteWithChildren,
   AuthenticatedLgiRoute: AuthenticatedLgiRouteWithChildren,
   AuthenticatedMediaRoute: AuthenticatedMediaRouteWithChildren,
 }
@@ -432,3 +502,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
