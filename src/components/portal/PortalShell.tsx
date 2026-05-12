@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LogOut, Bell, Home, QrCode, Users, FileText, Newspaper, Shield, BarChart3, Settings, UserCheck } from "lucide-react";
+import { LogOut, Bell, Home, QrCode, Users, Newspaper, Shield, BarChart3, UserCheck, LayoutGrid, Briefcase, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
@@ -12,28 +12,33 @@ export const corpsNav: NavItem[] = [
   { to: "/corps", label: "Home", icon: Home },
   { to: "/corps/scan", label: "Scan", icon: QrCode },
   { to: "/corps/community", label: "Community", icon: Users },
-  { to: "/corps/absence", label: "Absence", icon: FileText },
+  { to: "/corps/hub", label: "Hub", icon: LayoutGrid },
   { to: "/corps/news", label: "News", icon: Newspaper },
 ];
 
 export const adminNav: NavItem[] = [
   { to: "/admin", label: "Overview", icon: BarChart3 },
-  { to: "/admin/qr", label: "QR Event", icon: QrCode },
-  { to: "/admin/absences", label: "Absences", icon: FileText },
-  { to: "/admin/community", label: "Community", icon: Users },
+  { to: "/admin/qr", label: "Events", icon: QrCode },
+  { to: "/admin/community", label: "Content", icon: Users },
+  { to: "/admin/hub", label: "Modules", icon: LayoutGrid },
   { to: "/admin/news", label: "News", icon: Newspaper },
-  { to: "/admin/metrics", label: "Metrics", icon: Settings },
 ];
 
 export const lgiNav: NavItem[] = [
   { to: "/lgi", label: "Control", icon: Shield },
   { to: "/lgi/approvals", label: "Approvals", icon: UserCheck },
-  { to: "/lgi/attendance", label: "Attendance", icon: QrCode },
+  { to: "/lgi/attendance", label: "Events", icon: QrCode },
   { to: "/lgi/metrics", label: "Metrics", icon: BarChart3 },
+  { to: "/lgi/audit", label: "Audit", icon: Shield },
 ];
 
 export const mediaNav: NavItem[] = [
   { to: "/media", label: "Articles", icon: Newspaper },
+];
+
+export const firmNav: NavItem[] = [
+  { to: "/firm", label: "Firm", icon: Building2 },
+  { to: "/firm/jobs", label: "Jobs", icon: Briefcase },
 ];
 
 export function PortalShell({ items, role, children }: { items: NavItem[]; role: AppRole; children: React.ReactNode }) {
@@ -83,7 +88,6 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
     setPendingDevReq(null);
   };
 
-
   const roleLabel: Record<AppRole, string> = {
     corps_member: "Corps Member",
     admin: "Admin",
@@ -91,6 +95,8 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
     media_editor: "Media Editor",
     corporate_firm: "Corporate Firm",
   };
+
+  const portalRoot = items[0].to.split("/")[1] || "";
 
   return (
     <div className="min-h-screen bg-gradient-subtle pb-24">
@@ -108,7 +114,7 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
           <div className="flex items-center gap-1">
             <button
               aria-label="Notifications"
-              onClick={() => navigate({ to: `${items[0].to.split("/")[1] ? `/${items[0].to.split("/")[1]}` : "/"}/notifications` as never })}
+              onClick={() => navigate({ to: `/${portalRoot}/notifications` as never })}
               className="relative grid size-9 place-items-center rounded-lg hover:bg-accent"
             >
               <Bell className="size-4" />
@@ -150,8 +156,6 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
         {children}
       </motion.main>
 
-
-      {/* Bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 backdrop-blur">
         <div className="container mx-auto grid px-2 py-2" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0,1fr))` }}>
           {items.map((it) => {

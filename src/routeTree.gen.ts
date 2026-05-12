@@ -16,16 +16,41 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedMediaRouteImport } from './routes/_authenticated/media'
 import { Route as AuthenticatedLgiRouteImport } from './routes/_authenticated/lgi'
+import { Route as AuthenticatedFirmRouteImport } from './routes/_authenticated/firm'
 import { Route as AuthenticatedCorpsRouteImport } from './routes/_authenticated/corps'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMediaIndexRouteImport } from './routes/_authenticated/media/index'
 import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticated/lgi/index'
+import { Route as AuthenticatedFirmIndexRouteImport } from './routes/_authenticated/firm/index'
 import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedLgiNotificationsRouteImport } from './routes/_authenticated/lgi/notifications'
+import { Route as AuthenticatedLgiMetricsRouteImport } from './routes/_authenticated/lgi/metrics'
+import { Route as AuthenticatedLgiAuditRouteImport } from './routes/_authenticated/lgi/audit'
 import { Route as AuthenticatedLgiAttendanceRouteImport } from './routes/_authenticated/lgi/attendance'
 import { Route as AuthenticatedLgiApprovalsRouteImport } from './routes/_authenticated/lgi/approvals'
+import { Route as AuthenticatedFirmJobsRouteImport } from './routes/_authenticated/firm/jobs'
 import { Route as AuthenticatedCorpsScanRouteImport } from './routes/_authenticated/corps/scan'
+import { Route as AuthenticatedCorpsSaedRouteImport } from './routes/_authenticated/corps/saed'
+import { Route as AuthenticatedCorpsRankingsRouteImport } from './routes/_authenticated/corps/rankings'
+import { Route as AuthenticatedCorpsNotificationsRouteImport } from './routes/_authenticated/corps/notifications'
+import { Route as AuthenticatedCorpsNewsRouteImport } from './routes/_authenticated/corps/news'
+import { Route as AuthenticatedCorpsJobsRouteImport } from './routes/_authenticated/corps/jobs'
+import { Route as AuthenticatedCorpsHubRouteImport } from './routes/_authenticated/corps/hub'
+import { Route as AuthenticatedCorpsComplaintsRouteImport } from './routes/_authenticated/corps/complaints'
+import { Route as AuthenticatedCorpsCommunityRouteImport } from './routes/_authenticated/corps/community'
+import { Route as AuthenticatedCorpsClubsRouteImport } from './routes/_authenticated/corps/clubs'
+import { Route as AuthenticatedAdminSaedRouteImport } from './routes/_authenticated/admin/saed'
+import { Route as AuthenticatedAdminRankingsRouteImport } from './routes/_authenticated/admin/rankings'
 import { Route as AuthenticatedAdminQrRouteImport } from './routes/_authenticated/admin/qr'
+import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
+import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin/news'
+import { Route as AuthenticatedAdminMetricsRouteImport } from './routes/_authenticated/admin/metrics'
+import { Route as AuthenticatedAdminHubRouteImport } from './routes/_authenticated/admin/hub'
+import { Route as AuthenticatedAdminFirmsRouteImport } from './routes/_authenticated/admin/firms'
+import { Route as AuthenticatedAdminCommunityRouteImport } from './routes/_authenticated/admin/community'
+import { Route as AuthenticatedAdminClubsRouteImport } from './routes/_authenticated/admin/clubs'
+import { Route as AuthenticatedAdminAbsencesRouteImport } from './routes/_authenticated/admin/absences'
 
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
@@ -61,6 +86,11 @@ const AuthenticatedLgiRoute = AuthenticatedLgiRouteImport.update({
   path: '/lgi',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFirmRoute = AuthenticatedFirmRouteImport.update({
+  id: '/firm',
+  path: '/firm',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCorpsRoute = AuthenticatedCorpsRouteImport.update({
   id: '/corps',
   path: '/corps',
@@ -81,6 +111,11 @@ const AuthenticatedLgiIndexRoute = AuthenticatedLgiIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedLgiRoute,
 } as any)
+const AuthenticatedFirmIndexRoute = AuthenticatedFirmIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedFirmRoute,
+} as any)
 const AuthenticatedCorpsIndexRoute = AuthenticatedCorpsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -90,6 +125,22 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedLgiNotificationsRoute =
+  AuthenticatedLgiNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedLgiRoute,
+  } as any)
+const AuthenticatedLgiMetricsRoute = AuthenticatedLgiMetricsRouteImport.update({
+  id: '/metrics',
+  path: '/metrics',
+  getParentRoute: () => AuthenticatedLgiRoute,
+} as any)
+const AuthenticatedLgiAuditRoute = AuthenticatedLgiAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedLgiRoute,
 } as any)
 const AuthenticatedLgiAttendanceRoute =
   AuthenticatedLgiAttendanceRouteImport.update({
@@ -103,16 +154,125 @@ const AuthenticatedLgiApprovalsRoute =
     path: '/approvals',
     getParentRoute: () => AuthenticatedLgiRoute,
   } as any)
+const AuthenticatedFirmJobsRoute = AuthenticatedFirmJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedFirmRoute,
+} as any)
 const AuthenticatedCorpsScanRoute = AuthenticatedCorpsScanRouteImport.update({
   id: '/scan',
   path: '/scan',
   getParentRoute: () => AuthenticatedCorpsRoute,
 } as any)
+const AuthenticatedCorpsSaedRoute = AuthenticatedCorpsSaedRouteImport.update({
+  id: '/saed',
+  path: '/saed',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsRankingsRoute =
+  AuthenticatedCorpsRankingsRouteImport.update({
+    id: '/rankings',
+    path: '/rankings',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsNotificationsRoute =
+  AuthenticatedCorpsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsNewsRoute = AuthenticatedCorpsNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsJobsRoute = AuthenticatedCorpsJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsHubRoute = AuthenticatedCorpsHubRouteImport.update({
+  id: '/hub',
+  path: '/hub',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsComplaintsRoute =
+  AuthenticatedCorpsComplaintsRouteImport.update({
+    id: '/complaints',
+    path: '/complaints',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsCommunityRoute =
+  AuthenticatedCorpsCommunityRouteImport.update({
+    id: '/community',
+    path: '/community',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsClubsRoute = AuthenticatedCorpsClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedAdminSaedRoute = AuthenticatedAdminSaedRouteImport.update({
+  id: '/saed',
+  path: '/saed',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminRankingsRoute =
+  AuthenticatedAdminRankingsRouteImport.update({
+    id: '/rankings',
+    path: '/rankings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminQrRoute = AuthenticatedAdminQrRouteImport.update({
   id: '/qr',
   path: '/qr',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminNotificationsRoute =
+  AuthenticatedAdminNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminNewsRoute = AuthenticatedAdminNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminMetricsRoute =
+  AuthenticatedAdminMetricsRouteImport.update({
+    id: '/metrics',
+    path: '/metrics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminHubRoute = AuthenticatedAdminHubRouteImport.update({
+  id: '/hub',
+  path: '/hub',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminFirmsRoute = AuthenticatedAdminFirmsRouteImport.update({
+  id: '/firms',
+  path: '/firms',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminCommunityRoute =
+  AuthenticatedAdminCommunityRouteImport.update({
+    id: '/community',
+    path: '/community',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminClubsRoute = AuthenticatedAdminClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAbsencesRoute =
+  AuthenticatedAdminAbsencesRouteImport.update({
+    id: '/absences',
+    path: '/absences',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,14 +281,39 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
+  '/firm': typeof AuthenticatedFirmRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
+  '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/admin/clubs': typeof AuthenticatedAdminClubsRoute
+  '/admin/community': typeof AuthenticatedAdminCommunityRoute
+  '/admin/firms': typeof AuthenticatedAdminFirmsRoute
+  '/admin/hub': typeof AuthenticatedAdminHubRoute
+  '/admin/metrics': typeof AuthenticatedAdminMetricsRoute
+  '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/admin/rankings': typeof AuthenticatedAdminRankingsRoute
+  '/admin/saed': typeof AuthenticatedAdminSaedRoute
+  '/corps/clubs': typeof AuthenticatedCorpsClubsRoute
+  '/corps/community': typeof AuthenticatedCorpsCommunityRoute
+  '/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
+  '/corps/hub': typeof AuthenticatedCorpsHubRoute
+  '/corps/jobs': typeof AuthenticatedCorpsJobsRoute
+  '/corps/news': typeof AuthenticatedCorpsNewsRoute
+  '/corps/notifications': typeof AuthenticatedCorpsNotificationsRoute
+  '/corps/rankings': typeof AuthenticatedCorpsRankingsRoute
+  '/corps/saed': typeof AuthenticatedCorpsSaedRoute
   '/corps/scan': typeof AuthenticatedCorpsScanRoute
+  '/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
+  '/lgi/audit': typeof AuthenticatedLgiAuditRoute
+  '/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
+  '/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/corps/': typeof AuthenticatedCorpsIndexRoute
+  '/firm/': typeof AuthenticatedFirmIndexRoute
   '/lgi/': typeof AuthenticatedLgiIndexRoute
   '/media/': typeof AuthenticatedMediaIndexRoute
 }
@@ -137,12 +322,36 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
+  '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/admin/clubs': typeof AuthenticatedAdminClubsRoute
+  '/admin/community': typeof AuthenticatedAdminCommunityRoute
+  '/admin/firms': typeof AuthenticatedAdminFirmsRoute
+  '/admin/hub': typeof AuthenticatedAdminHubRoute
+  '/admin/metrics': typeof AuthenticatedAdminMetricsRoute
+  '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/admin/rankings': typeof AuthenticatedAdminRankingsRoute
+  '/admin/saed': typeof AuthenticatedAdminSaedRoute
+  '/corps/clubs': typeof AuthenticatedCorpsClubsRoute
+  '/corps/community': typeof AuthenticatedCorpsCommunityRoute
+  '/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
+  '/corps/hub': typeof AuthenticatedCorpsHubRoute
+  '/corps/jobs': typeof AuthenticatedCorpsJobsRoute
+  '/corps/news': typeof AuthenticatedCorpsNewsRoute
+  '/corps/notifications': typeof AuthenticatedCorpsNotificationsRoute
+  '/corps/rankings': typeof AuthenticatedCorpsRankingsRoute
+  '/corps/saed': typeof AuthenticatedCorpsSaedRoute
   '/corps/scan': typeof AuthenticatedCorpsScanRoute
+  '/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
+  '/lgi/audit': typeof AuthenticatedLgiAuditRoute
+  '/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
+  '/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
+  '/firm': typeof AuthenticatedFirmIndexRoute
   '/lgi': typeof AuthenticatedLgiIndexRoute
   '/media': typeof AuthenticatedMediaIndexRoute
 }
@@ -155,14 +364,39 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
+  '/_authenticated/firm': typeof AuthenticatedFirmRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
+  '/_authenticated/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/_authenticated/admin/clubs': typeof AuthenticatedAdminClubsRoute
+  '/_authenticated/admin/community': typeof AuthenticatedAdminCommunityRoute
+  '/_authenticated/admin/firms': typeof AuthenticatedAdminFirmsRoute
+  '/_authenticated/admin/hub': typeof AuthenticatedAdminHubRoute
+  '/_authenticated/admin/metrics': typeof AuthenticatedAdminMetricsRoute
+  '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/_authenticated/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/_authenticated/admin/rankings': typeof AuthenticatedAdminRankingsRoute
+  '/_authenticated/admin/saed': typeof AuthenticatedAdminSaedRoute
+  '/_authenticated/corps/clubs': typeof AuthenticatedCorpsClubsRoute
+  '/_authenticated/corps/community': typeof AuthenticatedCorpsCommunityRoute
+  '/_authenticated/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
+  '/_authenticated/corps/hub': typeof AuthenticatedCorpsHubRoute
+  '/_authenticated/corps/jobs': typeof AuthenticatedCorpsJobsRoute
+  '/_authenticated/corps/news': typeof AuthenticatedCorpsNewsRoute
+  '/_authenticated/corps/notifications': typeof AuthenticatedCorpsNotificationsRoute
+  '/_authenticated/corps/rankings': typeof AuthenticatedCorpsRankingsRoute
+  '/_authenticated/corps/saed': typeof AuthenticatedCorpsSaedRoute
   '/_authenticated/corps/scan': typeof AuthenticatedCorpsScanRoute
+  '/_authenticated/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/_authenticated/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
   '/_authenticated/lgi/attendance': typeof AuthenticatedLgiAttendanceRoute
+  '/_authenticated/lgi/audit': typeof AuthenticatedLgiAuditRoute
+  '/_authenticated/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
+  '/_authenticated/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
+  '/_authenticated/firm/': typeof AuthenticatedFirmIndexRoute
   '/_authenticated/lgi/': typeof AuthenticatedLgiIndexRoute
   '/_authenticated/media/': typeof AuthenticatedMediaIndexRoute
 }
@@ -175,14 +409,39 @@ export interface FileRouteTypes {
     | '/news'
     | '/admin'
     | '/corps'
+    | '/firm'
     | '/lgi'
     | '/media'
+    | '/admin/absences'
+    | '/admin/clubs'
+    | '/admin/community'
+    | '/admin/firms'
+    | '/admin/hub'
+    | '/admin/metrics'
+    | '/admin/news'
+    | '/admin/notifications'
     | '/admin/qr'
+    | '/admin/rankings'
+    | '/admin/saed'
+    | '/corps/clubs'
+    | '/corps/community'
+    | '/corps/complaints'
+    | '/corps/hub'
+    | '/corps/jobs'
+    | '/corps/news'
+    | '/corps/notifications'
+    | '/corps/rankings'
+    | '/corps/saed'
     | '/corps/scan'
+    | '/firm/jobs'
     | '/lgi/approvals'
     | '/lgi/attendance'
+    | '/lgi/audit'
+    | '/lgi/metrics'
+    | '/lgi/notifications'
     | '/admin/'
     | '/corps/'
+    | '/firm/'
     | '/lgi/'
     | '/media/'
   fileRoutesByTo: FileRoutesByTo
@@ -191,12 +450,36 @@ export interface FileRouteTypes {
     | '/auth'
     | '/device-change'
     | '/news'
+    | '/admin/absences'
+    | '/admin/clubs'
+    | '/admin/community'
+    | '/admin/firms'
+    | '/admin/hub'
+    | '/admin/metrics'
+    | '/admin/news'
+    | '/admin/notifications'
     | '/admin/qr'
+    | '/admin/rankings'
+    | '/admin/saed'
+    | '/corps/clubs'
+    | '/corps/community'
+    | '/corps/complaints'
+    | '/corps/hub'
+    | '/corps/jobs'
+    | '/corps/news'
+    | '/corps/notifications'
+    | '/corps/rankings'
+    | '/corps/saed'
     | '/corps/scan'
+    | '/firm/jobs'
     | '/lgi/approvals'
     | '/lgi/attendance'
+    | '/lgi/audit'
+    | '/lgi/metrics'
+    | '/lgi/notifications'
     | '/admin'
     | '/corps'
+    | '/firm'
     | '/lgi'
     | '/media'
   id:
@@ -208,14 +491,39 @@ export interface FileRouteTypes {
     | '/news'
     | '/_authenticated/admin'
     | '/_authenticated/corps'
+    | '/_authenticated/firm'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
+    | '/_authenticated/admin/absences'
+    | '/_authenticated/admin/clubs'
+    | '/_authenticated/admin/community'
+    | '/_authenticated/admin/firms'
+    | '/_authenticated/admin/hub'
+    | '/_authenticated/admin/metrics'
+    | '/_authenticated/admin/news'
+    | '/_authenticated/admin/notifications'
     | '/_authenticated/admin/qr'
+    | '/_authenticated/admin/rankings'
+    | '/_authenticated/admin/saed'
+    | '/_authenticated/corps/clubs'
+    | '/_authenticated/corps/community'
+    | '/_authenticated/corps/complaints'
+    | '/_authenticated/corps/hub'
+    | '/_authenticated/corps/jobs'
+    | '/_authenticated/corps/news'
+    | '/_authenticated/corps/notifications'
+    | '/_authenticated/corps/rankings'
+    | '/_authenticated/corps/saed'
     | '/_authenticated/corps/scan'
+    | '/_authenticated/firm/jobs'
     | '/_authenticated/lgi/approvals'
     | '/_authenticated/lgi/attendance'
+    | '/_authenticated/lgi/audit'
+    | '/_authenticated/lgi/metrics'
+    | '/_authenticated/lgi/notifications'
     | '/_authenticated/admin/'
     | '/_authenticated/corps/'
+    | '/_authenticated/firm/'
     | '/_authenticated/lgi/'
     | '/_authenticated/media/'
   fileRoutesById: FileRoutesById
@@ -279,6 +587,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLgiRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/firm': {
+      id: '/_authenticated/firm'
+      path: '/firm'
+      fullPath: '/firm'
+      preLoaderRoute: typeof AuthenticatedFirmRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/corps': {
       id: '/_authenticated/corps'
       path: '/corps'
@@ -307,6 +622,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLgiIndexRouteImport
       parentRoute: typeof AuthenticatedLgiRoute
     }
+    '/_authenticated/firm/': {
+      id: '/_authenticated/firm/'
+      path: '/'
+      fullPath: '/firm/'
+      preLoaderRoute: typeof AuthenticatedFirmIndexRouteImport
+      parentRoute: typeof AuthenticatedFirmRoute
+    }
     '/_authenticated/corps/': {
       id: '/_authenticated/corps/'
       path: '/'
@@ -320,6 +642,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/lgi/notifications': {
+      id: '/_authenticated/lgi/notifications'
+      path: '/notifications'
+      fullPath: '/lgi/notifications'
+      preLoaderRoute: typeof AuthenticatedLgiNotificationsRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
+    }
+    '/_authenticated/lgi/metrics': {
+      id: '/_authenticated/lgi/metrics'
+      path: '/metrics'
+      fullPath: '/lgi/metrics'
+      preLoaderRoute: typeof AuthenticatedLgiMetricsRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
+    }
+    '/_authenticated/lgi/audit': {
+      id: '/_authenticated/lgi/audit'
+      path: '/audit'
+      fullPath: '/lgi/audit'
+      preLoaderRoute: typeof AuthenticatedLgiAuditRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
     }
     '/_authenticated/lgi/attendance': {
       id: '/_authenticated/lgi/attendance'
@@ -335,12 +678,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLgiApprovalsRouteImport
       parentRoute: typeof AuthenticatedLgiRoute
     }
+    '/_authenticated/firm/jobs': {
+      id: '/_authenticated/firm/jobs'
+      path: '/jobs'
+      fullPath: '/firm/jobs'
+      preLoaderRoute: typeof AuthenticatedFirmJobsRouteImport
+      parentRoute: typeof AuthenticatedFirmRoute
+    }
     '/_authenticated/corps/scan': {
       id: '/_authenticated/corps/scan'
       path: '/scan'
       fullPath: '/corps/scan'
       preLoaderRoute: typeof AuthenticatedCorpsScanRouteImport
       parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/saed': {
+      id: '/_authenticated/corps/saed'
+      path: '/saed'
+      fullPath: '/corps/saed'
+      preLoaderRoute: typeof AuthenticatedCorpsSaedRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/rankings': {
+      id: '/_authenticated/corps/rankings'
+      path: '/rankings'
+      fullPath: '/corps/rankings'
+      preLoaderRoute: typeof AuthenticatedCorpsRankingsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/notifications': {
+      id: '/_authenticated/corps/notifications'
+      path: '/notifications'
+      fullPath: '/corps/notifications'
+      preLoaderRoute: typeof AuthenticatedCorpsNotificationsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/news': {
+      id: '/_authenticated/corps/news'
+      path: '/news'
+      fullPath: '/corps/news'
+      preLoaderRoute: typeof AuthenticatedCorpsNewsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/jobs': {
+      id: '/_authenticated/corps/jobs'
+      path: '/jobs'
+      fullPath: '/corps/jobs'
+      preLoaderRoute: typeof AuthenticatedCorpsJobsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/hub': {
+      id: '/_authenticated/corps/hub'
+      path: '/hub'
+      fullPath: '/corps/hub'
+      preLoaderRoute: typeof AuthenticatedCorpsHubRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/complaints': {
+      id: '/_authenticated/corps/complaints'
+      path: '/complaints'
+      fullPath: '/corps/complaints'
+      preLoaderRoute: typeof AuthenticatedCorpsComplaintsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/community': {
+      id: '/_authenticated/corps/community'
+      path: '/community'
+      fullPath: '/corps/community'
+      preLoaderRoute: typeof AuthenticatedCorpsCommunityRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/clubs': {
+      id: '/_authenticated/corps/clubs'
+      path: '/clubs'
+      fullPath: '/corps/clubs'
+      preLoaderRoute: typeof AuthenticatedCorpsClubsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/admin/saed': {
+      id: '/_authenticated/admin/saed'
+      path: '/saed'
+      fullPath: '/admin/saed'
+      preLoaderRoute: typeof AuthenticatedAdminSaedRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/rankings': {
+      id: '/_authenticated/admin/rankings'
+      path: '/rankings'
+      fullPath: '/admin/rankings'
+      preLoaderRoute: typeof AuthenticatedAdminRankingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/qr': {
       id: '/_authenticated/admin/qr'
@@ -349,16 +776,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminQrRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/notifications': {
+      id: '/_authenticated/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/news': {
+      id: '/_authenticated/admin/news'
+      path: '/news'
+      fullPath: '/admin/news'
+      preLoaderRoute: typeof AuthenticatedAdminNewsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/metrics': {
+      id: '/_authenticated/admin/metrics'
+      path: '/metrics'
+      fullPath: '/admin/metrics'
+      preLoaderRoute: typeof AuthenticatedAdminMetricsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/hub': {
+      id: '/_authenticated/admin/hub'
+      path: '/hub'
+      fullPath: '/admin/hub'
+      preLoaderRoute: typeof AuthenticatedAdminHubRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/firms': {
+      id: '/_authenticated/admin/firms'
+      path: '/firms'
+      fullPath: '/admin/firms'
+      preLoaderRoute: typeof AuthenticatedAdminFirmsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/community': {
+      id: '/_authenticated/admin/community'
+      path: '/community'
+      fullPath: '/admin/community'
+      preLoaderRoute: typeof AuthenticatedAdminCommunityRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/clubs': {
+      id: '/_authenticated/admin/clubs'
+      path: '/clubs'
+      fullPath: '/admin/clubs'
+      preLoaderRoute: typeof AuthenticatedAdminClubsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/absences': {
+      id: '/_authenticated/admin/absences'
+      path: '/absences'
+      fullPath: '/admin/absences'
+      preLoaderRoute: typeof AuthenticatedAdminAbsencesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAbsencesRoute: typeof AuthenticatedAdminAbsencesRoute
+  AuthenticatedAdminClubsRoute: typeof AuthenticatedAdminClubsRoute
+  AuthenticatedAdminCommunityRoute: typeof AuthenticatedAdminCommunityRoute
+  AuthenticatedAdminFirmsRoute: typeof AuthenticatedAdminFirmsRoute
+  AuthenticatedAdminHubRoute: typeof AuthenticatedAdminHubRoute
+  AuthenticatedAdminMetricsRoute: typeof AuthenticatedAdminMetricsRoute
+  AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
+  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
   AuthenticatedAdminQrRoute: typeof AuthenticatedAdminQrRoute
+  AuthenticatedAdminRankingsRoute: typeof AuthenticatedAdminRankingsRoute
+  AuthenticatedAdminSaedRoute: typeof AuthenticatedAdminSaedRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAbsencesRoute: AuthenticatedAdminAbsencesRoute,
+  AuthenticatedAdminClubsRoute: AuthenticatedAdminClubsRoute,
+  AuthenticatedAdminCommunityRoute: AuthenticatedAdminCommunityRoute,
+  AuthenticatedAdminFirmsRoute: AuthenticatedAdminFirmsRoute,
+  AuthenticatedAdminHubRoute: AuthenticatedAdminHubRoute,
+  AuthenticatedAdminMetricsRoute: AuthenticatedAdminMetricsRoute,
+  AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
+  AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
   AuthenticatedAdminQrRoute: AuthenticatedAdminQrRoute,
+  AuthenticatedAdminRankingsRoute: AuthenticatedAdminRankingsRoute,
+  AuthenticatedAdminSaedRoute: AuthenticatedAdminSaedRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
@@ -366,11 +869,29 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedCorpsRouteChildren {
+  AuthenticatedCorpsClubsRoute: typeof AuthenticatedCorpsClubsRoute
+  AuthenticatedCorpsCommunityRoute: typeof AuthenticatedCorpsCommunityRoute
+  AuthenticatedCorpsComplaintsRoute: typeof AuthenticatedCorpsComplaintsRoute
+  AuthenticatedCorpsHubRoute: typeof AuthenticatedCorpsHubRoute
+  AuthenticatedCorpsJobsRoute: typeof AuthenticatedCorpsJobsRoute
+  AuthenticatedCorpsNewsRoute: typeof AuthenticatedCorpsNewsRoute
+  AuthenticatedCorpsNotificationsRoute: typeof AuthenticatedCorpsNotificationsRoute
+  AuthenticatedCorpsRankingsRoute: typeof AuthenticatedCorpsRankingsRoute
+  AuthenticatedCorpsSaedRoute: typeof AuthenticatedCorpsSaedRoute
   AuthenticatedCorpsScanRoute: typeof AuthenticatedCorpsScanRoute
   AuthenticatedCorpsIndexRoute: typeof AuthenticatedCorpsIndexRoute
 }
 
 const AuthenticatedCorpsRouteChildren: AuthenticatedCorpsRouteChildren = {
+  AuthenticatedCorpsClubsRoute: AuthenticatedCorpsClubsRoute,
+  AuthenticatedCorpsCommunityRoute: AuthenticatedCorpsCommunityRoute,
+  AuthenticatedCorpsComplaintsRoute: AuthenticatedCorpsComplaintsRoute,
+  AuthenticatedCorpsHubRoute: AuthenticatedCorpsHubRoute,
+  AuthenticatedCorpsJobsRoute: AuthenticatedCorpsJobsRoute,
+  AuthenticatedCorpsNewsRoute: AuthenticatedCorpsNewsRoute,
+  AuthenticatedCorpsNotificationsRoute: AuthenticatedCorpsNotificationsRoute,
+  AuthenticatedCorpsRankingsRoute: AuthenticatedCorpsRankingsRoute,
+  AuthenticatedCorpsSaedRoute: AuthenticatedCorpsSaedRoute,
   AuthenticatedCorpsScanRoute: AuthenticatedCorpsScanRoute,
   AuthenticatedCorpsIndexRoute: AuthenticatedCorpsIndexRoute,
 }
@@ -378,15 +899,34 @@ const AuthenticatedCorpsRouteChildren: AuthenticatedCorpsRouteChildren = {
 const AuthenticatedCorpsRouteWithChildren =
   AuthenticatedCorpsRoute._addFileChildren(AuthenticatedCorpsRouteChildren)
 
+interface AuthenticatedFirmRouteChildren {
+  AuthenticatedFirmJobsRoute: typeof AuthenticatedFirmJobsRoute
+  AuthenticatedFirmIndexRoute: typeof AuthenticatedFirmIndexRoute
+}
+
+const AuthenticatedFirmRouteChildren: AuthenticatedFirmRouteChildren = {
+  AuthenticatedFirmJobsRoute: AuthenticatedFirmJobsRoute,
+  AuthenticatedFirmIndexRoute: AuthenticatedFirmIndexRoute,
+}
+
+const AuthenticatedFirmRouteWithChildren =
+  AuthenticatedFirmRoute._addFileChildren(AuthenticatedFirmRouteChildren)
+
 interface AuthenticatedLgiRouteChildren {
   AuthenticatedLgiApprovalsRoute: typeof AuthenticatedLgiApprovalsRoute
   AuthenticatedLgiAttendanceRoute: typeof AuthenticatedLgiAttendanceRoute
+  AuthenticatedLgiAuditRoute: typeof AuthenticatedLgiAuditRoute
+  AuthenticatedLgiMetricsRoute: typeof AuthenticatedLgiMetricsRoute
+  AuthenticatedLgiNotificationsRoute: typeof AuthenticatedLgiNotificationsRoute
   AuthenticatedLgiIndexRoute: typeof AuthenticatedLgiIndexRoute
 }
 
 const AuthenticatedLgiRouteChildren: AuthenticatedLgiRouteChildren = {
   AuthenticatedLgiApprovalsRoute: AuthenticatedLgiApprovalsRoute,
   AuthenticatedLgiAttendanceRoute: AuthenticatedLgiAttendanceRoute,
+  AuthenticatedLgiAuditRoute: AuthenticatedLgiAuditRoute,
+  AuthenticatedLgiMetricsRoute: AuthenticatedLgiMetricsRoute,
+  AuthenticatedLgiNotificationsRoute: AuthenticatedLgiNotificationsRoute,
   AuthenticatedLgiIndexRoute: AuthenticatedLgiIndexRoute,
 }
 
@@ -407,6 +947,7 @@ const AuthenticatedMediaRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedCorpsRoute: typeof AuthenticatedCorpsRouteWithChildren
+  AuthenticatedFirmRoute: typeof AuthenticatedFirmRouteWithChildren
   AuthenticatedLgiRoute: typeof AuthenticatedLgiRouteWithChildren
   AuthenticatedMediaRoute: typeof AuthenticatedMediaRouteWithChildren
 }
@@ -414,6 +955,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedCorpsRoute: AuthenticatedCorpsRouteWithChildren,
+  AuthenticatedFirmRoute: AuthenticatedFirmRouteWithChildren,
   AuthenticatedLgiRoute: AuthenticatedLgiRouteWithChildren,
   AuthenticatedMediaRoute: AuthenticatedMediaRouteWithChildren,
 }

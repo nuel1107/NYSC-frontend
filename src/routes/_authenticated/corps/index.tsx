@@ -45,7 +45,7 @@ function CorpsHome() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Quick actions</h2>
         <div className="grid grid-cols-2 gap-3">
           <ActionCard icon={QrCode} title="Scan QR" desc="Mark CDS attendance" to="/corps/scan" />
-          <ActionCard icon={FileText} title="Request leave" desc="Submit absence" to="/corps/absence" />
+          <ActionCard icon={FileText} title="Complaints" desc="Submit & track issues" to="/corps/complaints" />
           <ActionCard icon={Users} title="Community" desc="Connect with corps" to="/corps/community" />
           <ActionCard icon={Sparkles} title="News House" desc="Read latest updates" to="/corps/news" />
         </div>
