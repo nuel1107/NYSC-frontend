@@ -28,6 +28,15 @@ import { Route as AuthenticatedLgiAttendanceRouteImport } from './routes/_authen
 import { Route as AuthenticatedLgiApprovalsRouteImport } from './routes/_authenticated/lgi/approvals'
 import { Route as AuthenticatedFirmJobsRouteImport } from './routes/_authenticated/firm/jobs'
 import { Route as AuthenticatedCorpsScanRouteImport } from './routes/_authenticated/corps/scan'
+import { Route as AuthenticatedCorpsSaedRouteImport } from './routes/_authenticated/corps/saed'
+import { Route as AuthenticatedCorpsRankingsRouteImport } from './routes/_authenticated/corps/rankings'
+import { Route as AuthenticatedCorpsNotificationsRouteImport } from './routes/_authenticated/corps/notifications'
+import { Route as AuthenticatedCorpsNewsRouteImport } from './routes/_authenticated/corps/news'
+import { Route as AuthenticatedCorpsJobsRouteImport } from './routes/_authenticated/corps/jobs'
+import { Route as AuthenticatedCorpsHubRouteImport } from './routes/_authenticated/corps/hub'
+import { Route as AuthenticatedCorpsComplaintsRouteImport } from './routes/_authenticated/corps/complaints'
+import { Route as AuthenticatedCorpsCommunityRouteImport } from './routes/_authenticated/corps/community'
+import { Route as AuthenticatedCorpsClubsRouteImport } from './routes/_authenticated/corps/clubs'
 import { Route as AuthenticatedAdminQrRouteImport } from './routes/_authenticated/admin/qr'
 
 const NewsRoute = NewsRouteImport.update({
@@ -126,6 +135,55 @@ const AuthenticatedCorpsScanRoute = AuthenticatedCorpsScanRouteImport.update({
   path: '/scan',
   getParentRoute: () => AuthenticatedCorpsRoute,
 } as any)
+const AuthenticatedCorpsSaedRoute = AuthenticatedCorpsSaedRouteImport.update({
+  id: '/saed',
+  path: '/saed',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsRankingsRoute =
+  AuthenticatedCorpsRankingsRouteImport.update({
+    id: '/rankings',
+    path: '/rankings',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsNotificationsRoute =
+  AuthenticatedCorpsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsNewsRoute = AuthenticatedCorpsNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsJobsRoute = AuthenticatedCorpsJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsHubRoute = AuthenticatedCorpsHubRouteImport.update({
+  id: '/hub',
+  path: '/hub',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
+const AuthenticatedCorpsComplaintsRoute =
+  AuthenticatedCorpsComplaintsRouteImport.update({
+    id: '/complaints',
+    path: '/complaints',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsCommunityRoute =
+  AuthenticatedCorpsCommunityRouteImport.update({
+    id: '/community',
+    path: '/community',
+    getParentRoute: () => AuthenticatedCorpsRoute,
+  } as any)
+const AuthenticatedCorpsClubsRoute = AuthenticatedCorpsClubsRouteImport.update({
+  id: '/clubs',
+  path: '/clubs',
+  getParentRoute: () => AuthenticatedCorpsRoute,
+} as any)
 const AuthenticatedAdminQrRoute = AuthenticatedAdminQrRouteImport.update({
   id: '/qr',
   path: '/qr',
@@ -143,6 +201,15 @@ export interface FileRoutesByFullPath {
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
   '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/corps/clubs': typeof AuthenticatedCorpsClubsRoute
+  '/corps/community': typeof AuthenticatedCorpsCommunityRoute
+  '/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
+  '/corps/hub': typeof AuthenticatedCorpsHubRoute
+  '/corps/jobs': typeof AuthenticatedCorpsJobsRoute
+  '/corps/news': typeof AuthenticatedCorpsNewsRoute
+  '/corps/notifications': typeof AuthenticatedCorpsNotificationsRoute
+  '/corps/rankings': typeof AuthenticatedCorpsRankingsRoute
+  '/corps/saed': typeof AuthenticatedCorpsSaedRoute
   '/corps/scan': typeof AuthenticatedCorpsScanRoute
   '/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
@@ -159,6 +226,15 @@ export interface FileRoutesByTo {
   '/device-change': typeof DeviceChangeRoute
   '/news': typeof NewsRoute
   '/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/corps/clubs': typeof AuthenticatedCorpsClubsRoute
+  '/corps/community': typeof AuthenticatedCorpsCommunityRoute
+  '/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
+  '/corps/hub': typeof AuthenticatedCorpsHubRoute
+  '/corps/jobs': typeof AuthenticatedCorpsJobsRoute
+  '/corps/news': typeof AuthenticatedCorpsNewsRoute
+  '/corps/notifications': typeof AuthenticatedCorpsNotificationsRoute
+  '/corps/rankings': typeof AuthenticatedCorpsRankingsRoute
+  '/corps/saed': typeof AuthenticatedCorpsSaedRoute
   '/corps/scan': typeof AuthenticatedCorpsScanRoute
   '/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
@@ -182,6 +258,15 @@ export interface FileRoutesById {
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
   '/_authenticated/admin/qr': typeof AuthenticatedAdminQrRoute
+  '/_authenticated/corps/clubs': typeof AuthenticatedCorpsClubsRoute
+  '/_authenticated/corps/community': typeof AuthenticatedCorpsCommunityRoute
+  '/_authenticated/corps/complaints': typeof AuthenticatedCorpsComplaintsRoute
+  '/_authenticated/corps/hub': typeof AuthenticatedCorpsHubRoute
+  '/_authenticated/corps/jobs': typeof AuthenticatedCorpsJobsRoute
+  '/_authenticated/corps/news': typeof AuthenticatedCorpsNewsRoute
+  '/_authenticated/corps/notifications': typeof AuthenticatedCorpsNotificationsRoute
+  '/_authenticated/corps/rankings': typeof AuthenticatedCorpsRankingsRoute
+  '/_authenticated/corps/saed': typeof AuthenticatedCorpsSaedRoute
   '/_authenticated/corps/scan': typeof AuthenticatedCorpsScanRoute
   '/_authenticated/firm/jobs': typeof AuthenticatedFirmJobsRoute
   '/_authenticated/lgi/approvals': typeof AuthenticatedLgiApprovalsRoute
@@ -205,6 +290,15 @@ export interface FileRouteTypes {
     | '/lgi'
     | '/media'
     | '/admin/qr'
+    | '/corps/clubs'
+    | '/corps/community'
+    | '/corps/complaints'
+    | '/corps/hub'
+    | '/corps/jobs'
+    | '/corps/news'
+    | '/corps/notifications'
+    | '/corps/rankings'
+    | '/corps/saed'
     | '/corps/scan'
     | '/firm/jobs'
     | '/lgi/approvals'
@@ -221,6 +315,15 @@ export interface FileRouteTypes {
     | '/device-change'
     | '/news'
     | '/admin/qr'
+    | '/corps/clubs'
+    | '/corps/community'
+    | '/corps/complaints'
+    | '/corps/hub'
+    | '/corps/jobs'
+    | '/corps/news'
+    | '/corps/notifications'
+    | '/corps/rankings'
+    | '/corps/saed'
     | '/corps/scan'
     | '/firm/jobs'
     | '/lgi/approvals'
@@ -243,6 +346,15 @@ export interface FileRouteTypes {
     | '/_authenticated/lgi'
     | '/_authenticated/media'
     | '/_authenticated/admin/qr'
+    | '/_authenticated/corps/clubs'
+    | '/_authenticated/corps/community'
+    | '/_authenticated/corps/complaints'
+    | '/_authenticated/corps/hub'
+    | '/_authenticated/corps/jobs'
+    | '/_authenticated/corps/news'
+    | '/_authenticated/corps/notifications'
+    | '/_authenticated/corps/rankings'
+    | '/_authenticated/corps/saed'
     | '/_authenticated/corps/scan'
     | '/_authenticated/firm/jobs'
     | '/_authenticated/lgi/approvals'
@@ -397,6 +509,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCorpsScanRouteImport
       parentRoute: typeof AuthenticatedCorpsRoute
     }
+    '/_authenticated/corps/saed': {
+      id: '/_authenticated/corps/saed'
+      path: '/saed'
+      fullPath: '/corps/saed'
+      preLoaderRoute: typeof AuthenticatedCorpsSaedRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/rankings': {
+      id: '/_authenticated/corps/rankings'
+      path: '/rankings'
+      fullPath: '/corps/rankings'
+      preLoaderRoute: typeof AuthenticatedCorpsRankingsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/notifications': {
+      id: '/_authenticated/corps/notifications'
+      path: '/notifications'
+      fullPath: '/corps/notifications'
+      preLoaderRoute: typeof AuthenticatedCorpsNotificationsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/news': {
+      id: '/_authenticated/corps/news'
+      path: '/news'
+      fullPath: '/corps/news'
+      preLoaderRoute: typeof AuthenticatedCorpsNewsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/jobs': {
+      id: '/_authenticated/corps/jobs'
+      path: '/jobs'
+      fullPath: '/corps/jobs'
+      preLoaderRoute: typeof AuthenticatedCorpsJobsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/hub': {
+      id: '/_authenticated/corps/hub'
+      path: '/hub'
+      fullPath: '/corps/hub'
+      preLoaderRoute: typeof AuthenticatedCorpsHubRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/complaints': {
+      id: '/_authenticated/corps/complaints'
+      path: '/complaints'
+      fullPath: '/corps/complaints'
+      preLoaderRoute: typeof AuthenticatedCorpsComplaintsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/community': {
+      id: '/_authenticated/corps/community'
+      path: '/community'
+      fullPath: '/corps/community'
+      preLoaderRoute: typeof AuthenticatedCorpsCommunityRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
+    '/_authenticated/corps/clubs': {
+      id: '/_authenticated/corps/clubs'
+      path: '/clubs'
+      fullPath: '/corps/clubs'
+      preLoaderRoute: typeof AuthenticatedCorpsClubsRouteImport
+      parentRoute: typeof AuthenticatedCorpsRoute
+    }
     '/_authenticated/admin/qr': {
       id: '/_authenticated/admin/qr'
       path: '/qr'
@@ -421,11 +596,29 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedCorpsRouteChildren {
+  AuthenticatedCorpsClubsRoute: typeof AuthenticatedCorpsClubsRoute
+  AuthenticatedCorpsCommunityRoute: typeof AuthenticatedCorpsCommunityRoute
+  AuthenticatedCorpsComplaintsRoute: typeof AuthenticatedCorpsComplaintsRoute
+  AuthenticatedCorpsHubRoute: typeof AuthenticatedCorpsHubRoute
+  AuthenticatedCorpsJobsRoute: typeof AuthenticatedCorpsJobsRoute
+  AuthenticatedCorpsNewsRoute: typeof AuthenticatedCorpsNewsRoute
+  AuthenticatedCorpsNotificationsRoute: typeof AuthenticatedCorpsNotificationsRoute
+  AuthenticatedCorpsRankingsRoute: typeof AuthenticatedCorpsRankingsRoute
+  AuthenticatedCorpsSaedRoute: typeof AuthenticatedCorpsSaedRoute
   AuthenticatedCorpsScanRoute: typeof AuthenticatedCorpsScanRoute
   AuthenticatedCorpsIndexRoute: typeof AuthenticatedCorpsIndexRoute
 }
 
 const AuthenticatedCorpsRouteChildren: AuthenticatedCorpsRouteChildren = {
+  AuthenticatedCorpsClubsRoute: AuthenticatedCorpsClubsRoute,
+  AuthenticatedCorpsCommunityRoute: AuthenticatedCorpsCommunityRoute,
+  AuthenticatedCorpsComplaintsRoute: AuthenticatedCorpsComplaintsRoute,
+  AuthenticatedCorpsHubRoute: AuthenticatedCorpsHubRoute,
+  AuthenticatedCorpsJobsRoute: AuthenticatedCorpsJobsRoute,
+  AuthenticatedCorpsNewsRoute: AuthenticatedCorpsNewsRoute,
+  AuthenticatedCorpsNotificationsRoute: AuthenticatedCorpsNotificationsRoute,
+  AuthenticatedCorpsRankingsRoute: AuthenticatedCorpsRankingsRoute,
+  AuthenticatedCorpsSaedRoute: AuthenticatedCorpsSaedRoute,
   AuthenticatedCorpsScanRoute: AuthenticatedCorpsScanRoute,
   AuthenticatedCorpsIndexRoute: AuthenticatedCorpsIndexRoute,
 }
