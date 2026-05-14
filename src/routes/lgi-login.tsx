@@ -47,12 +47,22 @@ function LGILoginPage() {
   const onLGISignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
-    const parsed = lgiSigninSchema.safeParse({ email: f.get("email"), password: f.get("password") });
-    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+    const parsed = lgiSigninSchema.safeParse({
+      email: f.get("email"),
+      password: f.get("password"),
+    });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0].message);
+      return;
+    }
 
     setBusy(true);
     const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
-    if (error) { setBusy(false); toast.error(error.message); return; }
+    if (error) {
+      setBusy(false);
+      toast.error(error.message);
+      return;
+    }
 
     try {
       const allowed = data.user ? await hasApprovedLGIRole(data.user.id) : false;
@@ -72,8 +82,16 @@ function LGILoginPage() {
 
   return (
     <div className="grid min-h-screen place-items-center bg-gradient-subtle p-6">
-      <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="w-full max-w-md">
-        <Link to="/auth" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="w-full max-w-md"
+      >
+        <Link
+          to="/auth"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="size-4" /> Standard login
         </Link>
 
@@ -83,16 +101,35 @@ function LGILoginPage() {
               <ShieldCheck className="size-5" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Direct portal access</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                Direct portal access
+              </p>
               <h1 className="text-2xl font-semibold tracking-tight">LGI Super-Admin</h1>
             </div>
           </div>
 
           <form onSubmit={onLGISignIn} className="space-y-4">
-            <Field label="LGI email" name="email" type="email" autoComplete="email" defaultValue="emmanuelokoye.help@gmail.com" required />
-            <Field label="Password" name="password" type="password" autoComplete="current-password" required />
+            <Field
+              label="LGI email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              defaultValue="emmanuelokoye.help@gmail.com"
+              required
+            />
+            <Field
+              label="Password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+            />
             <Button disabled={busy} className="w-full bg-gradient-primary shadow-elegant">
-              {busy ? <Loader2 className="mr-2 size-4 animate-spin" /> : <KeyRound className="mr-2 size-4" />}
+              {busy ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <KeyRound className="mr-2 size-4" />
+              )}
               Enter LGI Portal
             </Button>
           </form>

@@ -8,12 +8,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, rolePortalPath, type AppRole } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({ tab: (s.tab as string) === "signup" ? "signup" : "signin" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    tab: (s.tab as string) === "signup" ? "signup" : "signin",
+  }),
   component: AuthPage,
   head: () => ({ meta: [{ title: "Sign in — Ikeja LGA" }] }),
 });
@@ -62,11 +70,17 @@ function AuthPage() {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const parsed = signinSchema.safeParse({ email: f.get("email"), password: f.get("password") });
-    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0].message);
+      return;
+    }
     setBusy(true);
     const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Welcome back");
     try {
       const nextRole = data.user ? await getApprovedPrimaryRole(data.user.id) : null;
@@ -82,10 +96,16 @@ function AuthPage() {
     const f = new FormData(e.currentTarget);
 
     const base = signinSchema.safeParse({ email: f.get("email"), password: f.get("password") });
-    if (!base.success) { toast.error(base.error.issues[0].message); return; }
+    if (!base.success) {
+      toast.error(base.error.issues[0].message);
+      return;
+    }
 
     const fullName = String(f.get("fullName") ?? "").trim();
-    if (fullName.length < 2) { toast.error("Full name is required"); return; }
+    if (fullName.length < 2) {
+      toast.error("Full name is required");
+      return;
+    }
 
     const meta: Record<string, string> = {
       full_name: fullName,
@@ -114,7 +134,11 @@ function AuthPage() {
       password: base.data.password,
       options: { emailRedirectTo: `${window.location.origin}/`, data: meta },
     });
-    if (error) { setBusy(false); toast.error(error.message); return; }
+    if (error) {
+      setBusy(false);
+      toast.error(error.message);
+      return;
+    }
 
     // Corporate firm: create firm row owned by new user
     if (role === "corporate_firm" && data.user) {
@@ -132,28 +156,50 @@ function AuthPage() {
 
     setBusy(false);
     if (role === "corps_member") toast.success("Welcome aboard. You're approved.");
-    else if (role === "lgi") toast.success("Account created. If the LGI seat is open, you're approved.");
+    else if (role === "lgi")
+      toast.success("Account created. If the LGI seat is open, you're approved.");
     else toast.success("Account created. Awaiting LGI approval.");
   };
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="relative hidden bg-gradient-hero p-10 text-primary-foreground lg:flex lg:flex-col lg:justify-between">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-90 hover:opacity-100">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm opacity-90 hover:opacity-100"
+        >
           <ArrowLeft className="size-4" /> Back to home
         </Link>
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6">
-          <div className="grid size-12 place-items-center rounded-2xl bg-white/15 backdrop-blur"><Shield className="size-6" /></div>
-          <h1 className="max-w-md text-4xl font-semibold leading-tight tracking-tight">Ikeja LGA NYSC Digital Ecosystem.</h1>
-          <p className="max-w-md text-white/80">Corps Member, Admin, Media, LGI Super-Admin, or Corporate Firm — one secure portal.</p>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="space-y-6"
+        >
+          <div className="grid size-12 place-items-center rounded-2xl bg-white/15 backdrop-blur">
+            <Shield className="size-6" />
+          </div>
+          <h1 className="max-w-md text-4xl font-semibold leading-tight tracking-tight">
+            Ikeja LGA NYSC Digital Ecosystem.
+          </h1>
+          <p className="max-w-md text-white/80">
+            Corps Member, Admin, Media, LGI Super-Admin, or Corporate Firm — one secure portal.
+          </p>
         </motion.div>
         <p className="text-xs text-white/60">© {new Date().getFullYear()} Ikeja LGA Secretariat.</p>
       </div>
 
       <div className="flex items-center justify-center p-6 sm:p-10">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-md">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-md"
+        >
           <div className="mb-6 text-center lg:hidden">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="size-4" /> Home</Link>
+            <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <ArrowLeft className="size-4" /> Home
+            </Link>
           </div>
           <Tabs defaultValue={tab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -164,7 +210,13 @@ function AuthPage() {
             <TabsContent value="signin" className="mt-6">
               <form onSubmit={onSignIn} className="space-y-4">
                 <Field label="Email" name="email" type="email" autoComplete="email" required />
-                <Field label="Password" name="password" type="password" autoComplete="current-password" required />
+                <Field
+                  label="Password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                />
                 <Button disabled={busy} className="w-full bg-gradient-primary shadow-elegant">
                   {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Sign in
                 </Button>
@@ -181,11 +233,14 @@ function AuthPage() {
                 <div className="space-y-1.5">
                   <Label>Account type</Label>
                   <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       {ROLES.map((r) => (
                         <SelectItem key={r.value} value={r.value}>
-                          {r.label}{r.note ? ` — ${r.note}` : ""}
+                          {r.label}
+                          {r.note ? ` — ${r.note}` : ""}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -197,7 +252,13 @@ function AuthPage() {
                   <Field label="Email" name="email" type="email" autoComplete="email" required />
                   <Field label="Phone" name="phone" type="tel" />
                 </div>
-                <Field label="Password" name="password" type="password" autoComplete="new-password" required />
+                <Field
+                  label="Password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                />
 
                 {role === "corps_member" && (
                   <>
@@ -213,7 +274,12 @@ function AuthPage() {
                 )}
 
                 {(role === "admin" || role === "lgi") && (
-                  <Field label="Portal/Staff number" name="portal_number" placeholder="LGI-001" required />
+                  <Field
+                    label="Portal/Staff number"
+                    name="portal_number"
+                    placeholder="LGI-001"
+                    required
+                  />
                 )}
 
                 {role === "corporate_firm" && (
@@ -223,7 +289,11 @@ function AuthPage() {
                       <Field label="Industry" name="industry" placeholder="FinTech" />
                       <Field label="Number of staff" name="num_staff" type="number" min={1} />
                     </div>
-                    <Field label="Your role at the firm" name="applicant_role" placeholder="HR Director" />
+                    <Field
+                      label="Your role at the firm"
+                      name="applicant_role"
+                      placeholder="HR Director"
+                    />
                     <Field label="CSR focus" name="csr_focus" placeholder="Youth empowerment" />
                   </>
                 )}
