@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as LgiLoginRouteImport } from './routes/lgi-login'
 import { Route as DeviceChangeRouteImport } from './routes/device-change'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -55,6 +56,11 @@ import { Route as AuthenticatedAdminAbsencesRouteImport } from './routes/_authen
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LgiLoginRoute = LgiLoginRouteImport.update({
+  id: '/lgi-login',
+  path: '/lgi-login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeviceChangeRoute = DeviceChangeRouteImport.update({
@@ -278,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
+  '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
@@ -321,6 +328,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
+  '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
   '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
   '/admin/clubs': typeof AuthenticatedAdminClubsRoute
@@ -361,6 +369,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
+  '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
@@ -406,6 +415,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/device-change'
+    | '/lgi-login'
     | '/news'
     | '/admin'
     | '/corps'
@@ -449,6 +459,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/device-change'
+    | '/lgi-login'
     | '/news'
     | '/admin/absences'
     | '/admin/clubs'
@@ -488,6 +499,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/device-change'
+    | '/lgi-login'
     | '/news'
     | '/_authenticated/admin'
     | '/_authenticated/corps'
@@ -533,6 +545,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   DeviceChangeRoute: typeof DeviceChangeRoute
+  LgiLoginRoute: typeof LgiLoginRoute
   NewsRoute: typeof NewsRoute
 }
 
@@ -543,6 +556,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lgi-login': {
+      id: '/lgi-login'
+      path: '/lgi-login'
+      fullPath: '/lgi-login'
+      preLoaderRoute: typeof LgiLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/device-change': {
@@ -969,6 +989,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   DeviceChangeRoute: DeviceChangeRoute,
+  LgiLoginRoute: LgiLoginRoute,
   NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
