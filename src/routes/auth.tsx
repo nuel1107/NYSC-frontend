@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Shield, ArrowLeft, Loader2 } from "lucide-react";
+import { Shield, ArrowLeft, Loader2, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +31,20 @@ const ROLES: { value: AppRole; label: string; note?: string }[] = [
   { value: "corporate_firm", label: "Corporate Firm", note: "LGI approval required" },
 ];
 
+async function getApprovedPrimaryRole(userId: string): Promise<AppRole | null> {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("status", "approved");
+
+  if (error) throw error;
+
+  const roles = ((data ?? []) as { role: AppRole }[]).map((item) => item.role);
+  const order: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
+  return order.find((item) => roles.includes(item)) ?? null;
+}
+
 function AuthPage() {
   const { tab } = Route.useSearch();
   const navigate = useNavigate();
@@ -50,10 +64,17 @@ function AuthPage() {
     const parsed = signinSchema.safeParse({ email: f.get("email"), password: f.get("password") });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
+    const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Welcome back");
+    try {
+      const nextRole = data.user ? await getApprovedPrimaryRole(data.user.id) : null;
+      if (nextRole) void navigate({ to: rolePortalPath(nextRole) });
+      else toast.error("This account is still awaiting portal approval.");
+    } catch {
+      toast.error("Sign in worked, but your portal could not be loaded. Please try again.");
+    }
   };
 
   const onSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -146,6 +167,11 @@ function AuthPage() {
                 <Field label="Password" name="password" type="password" autoComplete="current-password" required />
                 <Button disabled={busy} className="w-full bg-gradient-primary shadow-elegant">
                   {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Sign in
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/lgi-login">
+                    <KeyRound className="mr-2 size-4" /> LGI direct access
+                  </Link>
                 </Button>
               </form>
             </TabsContent>
