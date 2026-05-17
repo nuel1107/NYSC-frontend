@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LogOut, Bell, Home, QrCode, Users, Newspaper, Shield, BarChart3, UserCheck, LayoutGrid, Briefcase, Building2 } from "lucide-react";
+import { LogOut, Bell, Home, QrCode, Users, Newspaper, Shield, BarChart3, UserCheck, LayoutGrid, Briefcase, Building2, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
@@ -19,8 +19,8 @@ export const corpsNav: NavItem[] = [
 export const adminNav: NavItem[] = [
   { to: "/admin", label: "Overview", icon: BarChart3 },
   { to: "/admin/qr", label: "Events", icon: QrCode },
+  { to: "/admin/approvals", label: "Devices", icon: Smartphone },
   { to: "/admin/community", label: "Content", icon: Users },
-  { to: "/admin/hub", label: "Modules", icon: LayoutGrid },
   { to: "/admin/news", label: "News", icon: Newspaper },
 ];
 

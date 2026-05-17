@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as LgiLoginRouteImport } from './routes/lgi-login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DeviceChangeRouteImport } from './routes/device-change'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -51,8 +53,14 @@ import { Route as AuthenticatedAdminHubRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminFirmsRouteImport } from './routes/_authenticated/admin/firms'
 import { Route as AuthenticatedAdminCommunityRouteImport } from './routes/_authenticated/admin/community'
 import { Route as AuthenticatedAdminClubsRouteImport } from './routes/_authenticated/admin/clubs'
+import { Route as AuthenticatedAdminApprovalsRouteImport } from './routes/_authenticated/admin/approvals'
 import { Route as AuthenticatedAdminAbsencesRouteImport } from './routes/_authenticated/admin/absences'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -61,6 +69,11 @@ const NewsRoute = NewsRouteImport.update({
 const LgiLoginRoute = LgiLoginRouteImport.update({
   id: '/lgi-login',
   path: '/lgi-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeviceChangeRoute = DeviceChangeRouteImport.update({
@@ -273,6 +286,12 @@ const AuthenticatedAdminClubsRoute = AuthenticatedAdminClubsRouteImport.update({
   path: '/clubs',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminApprovalsRoute =
+  AuthenticatedAdminApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAbsencesRoute =
   AuthenticatedAdminAbsencesRouteImport.update({
     id: '/absences',
@@ -284,14 +303,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/corps': typeof AuthenticatedCorpsRouteWithChildren
   '/firm': typeof AuthenticatedFirmRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
   '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
   '/admin/clubs': typeof AuthenticatedAdminClubsRoute
   '/admin/community': typeof AuthenticatedAdminCommunityRoute
   '/admin/firms': typeof AuthenticatedAdminFirmsRoute
@@ -328,9 +350,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
   '/admin/clubs': typeof AuthenticatedAdminClubsRoute
   '/admin/community': typeof AuthenticatedAdminCommunityRoute
   '/admin/firms': typeof AuthenticatedAdminFirmsRoute
@@ -369,14 +394,17 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/device-change': typeof DeviceChangeRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/corps': typeof AuthenticatedCorpsRouteWithChildren
   '/_authenticated/firm': typeof AuthenticatedFirmRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
   '/_authenticated/admin/absences': typeof AuthenticatedAdminAbsencesRoute
+  '/_authenticated/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
   '/_authenticated/admin/clubs': typeof AuthenticatedAdminClubsRoute
   '/_authenticated/admin/community': typeof AuthenticatedAdminCommunityRoute
   '/_authenticated/admin/firms': typeof AuthenticatedAdminFirmsRoute
@@ -415,14 +443,17 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/device-change'
+    | '/forgot-password'
     | '/lgi-login'
     | '/news'
+    | '/reset-password'
     | '/admin'
     | '/corps'
     | '/firm'
     | '/lgi'
     | '/media'
     | '/admin/absences'
+    | '/admin/approvals'
     | '/admin/clubs'
     | '/admin/community'
     | '/admin/firms'
@@ -459,9 +490,12 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/device-change'
+    | '/forgot-password'
     | '/lgi-login'
     | '/news'
+    | '/reset-password'
     | '/admin/absences'
+    | '/admin/approvals'
     | '/admin/clubs'
     | '/admin/community'
     | '/admin/firms'
@@ -499,14 +533,17 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/device-change'
+    | '/forgot-password'
     | '/lgi-login'
     | '/news'
+    | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/corps'
     | '/_authenticated/firm'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
     | '/_authenticated/admin/absences'
+    | '/_authenticated/admin/approvals'
     | '/_authenticated/admin/clubs'
     | '/_authenticated/admin/community'
     | '/_authenticated/admin/firms'
@@ -545,12 +582,21 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   DeviceChangeRoute: typeof DeviceChangeRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LgiLoginRoute: typeof LgiLoginRoute
   NewsRoute: typeof NewsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -563,6 +609,13 @@ declare module '@tanstack/react-router' {
       path: '/lgi-login'
       fullPath: '/lgi-login'
       preLoaderRoute: typeof LgiLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/device-change': {
@@ -845,6 +898,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminClubsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/approvals': {
+      id: '/_authenticated/admin/approvals'
+      path: '/approvals'
+      fullPath: '/admin/approvals'
+      preLoaderRoute: typeof AuthenticatedAdminApprovalsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/absences': {
       id: '/_authenticated/admin/absences'
       path: '/absences'
@@ -857,6 +917,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAbsencesRoute: typeof AuthenticatedAdminAbsencesRoute
+  AuthenticatedAdminApprovalsRoute: typeof AuthenticatedAdminApprovalsRoute
   AuthenticatedAdminClubsRoute: typeof AuthenticatedAdminClubsRoute
   AuthenticatedAdminCommunityRoute: typeof AuthenticatedAdminCommunityRoute
   AuthenticatedAdminFirmsRoute: typeof AuthenticatedAdminFirmsRoute
@@ -872,6 +933,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAbsencesRoute: AuthenticatedAdminAbsencesRoute,
+  AuthenticatedAdminApprovalsRoute: AuthenticatedAdminApprovalsRoute,
   AuthenticatedAdminClubsRoute: AuthenticatedAdminClubsRoute,
   AuthenticatedAdminCommunityRoute: AuthenticatedAdminCommunityRoute,
   AuthenticatedAdminFirmsRoute: AuthenticatedAdminFirmsRoute,
@@ -989,8 +1051,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   DeviceChangeRoute: DeviceChangeRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LgiLoginRoute: LgiLoginRoute,
   NewsRoute: NewsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
