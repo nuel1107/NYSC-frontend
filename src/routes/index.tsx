@@ -69,7 +69,7 @@ function Landing() {
             transition={{ duration: 0.6, delay: 0.12 }}
             className="mx-auto mt-5 max-w-2xl text-balance text-lg text-muted-foreground"
           >
-            One synchronized ecosystem for Corps members, Admins, and the LGI Super-Admin —
+            One synchronized ecosystem for Corps members, Admins, and the LGI Super-Admin -
             attendance via rotating QR, leave-of-absence workflow, community hub, and live impact reporting.
           </motion.p>
           <motion.div
