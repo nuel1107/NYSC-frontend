@@ -61,7 +61,7 @@ function Landing() {
             className="text-balance text-5xl font-semibold tracking-tight sm:text-6xl"
           >
             The digital nerve center for{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">Ikeja NYSC</span>.
+            <span className="text-primary">Ikeja NYSC</span>.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
