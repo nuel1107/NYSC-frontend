@@ -220,11 +220,14 @@ function AuthPage() {
                 <Button disabled={busy} className="w-full bg-gradient-primary shadow-elegant">
                   {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Sign in
                 </Button>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/lgi-login">
-                    <KeyRound className="mr-2 size-4" /> LGI direct access
+                <div className="flex items-center justify-between text-sm">
+                  <Link to="/forgot-password" className="text-muted-foreground hover:text-foreground">
+                    Forgot password?
                   </Link>
-                </Button>
+                  <Link to="/lgi-login" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                    <KeyRound className="size-3.5" /> LGI direct access
+                  </Link>
+                </div>
               </form>
             </TabsContent>
 
