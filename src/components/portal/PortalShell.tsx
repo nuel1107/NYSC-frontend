@@ -102,7 +102,7 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
     <div className="min-h-screen bg-gradient-subtle pb-24">
       <header className="sticky top-0 z-30 border-b bg-card/80 backdrop-blur">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
+          <Link to="/profile" className="flex items-center gap-3 rounded-lg p-1 -m-1 hover:bg-accent">
             <div className="grid size-8 place-items-center rounded-lg bg-gradient-primary shadow-elegant">
               <Shield className="size-4 text-primary-foreground" />
             </div>
@@ -110,7 +110,7 @@ export function PortalShell({ items, role, children }: { items: NavItem[]; role:
               <p className="text-xs text-muted-foreground">{roleLabel[role]}</p>
               <p className="text-sm font-semibold leading-none">{profile?.full_name ?? "—"}</p>
             </div>
-          </div>
+          </Link>
           <div className="flex items-center gap-1">
             <button
               aria-label="Notifications"
