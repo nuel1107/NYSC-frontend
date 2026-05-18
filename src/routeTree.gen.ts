@@ -17,6 +17,7 @@ import { Route as DeviceChangeRouteImport } from './routes/device-change'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedMediaRouteImport } from './routes/_authenticated/media'
 import { Route as AuthenticatedLgiRouteImport } from './routes/_authenticated/lgi'
 import { Route as AuthenticatedFirmRouteImport } from './routes/_authenticated/firm'
@@ -94,6 +95,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedMediaRoute = AuthenticatedMediaRouteImport.update({
   id: '/media',
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/firm': typeof AuthenticatedFirmRouteWithChildren
   '/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/media': typeof AuthenticatedMediaRouteWithChildren
+  '/profile': typeof AuthenticatedProfileRoute
   '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
   '/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
   '/admin/clubs': typeof AuthenticatedAdminClubsRoute
@@ -354,6 +361,7 @@ export interface FileRoutesByTo {
   '/lgi-login': typeof LgiLoginRoute
   '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/admin/absences': typeof AuthenticatedAdminAbsencesRoute
   '/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
   '/admin/clubs': typeof AuthenticatedAdminClubsRoute
@@ -403,6 +411,7 @@ export interface FileRoutesById {
   '/_authenticated/firm': typeof AuthenticatedFirmRouteWithChildren
   '/_authenticated/lgi': typeof AuthenticatedLgiRouteWithChildren
   '/_authenticated/media': typeof AuthenticatedMediaRouteWithChildren
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/admin/absences': typeof AuthenticatedAdminAbsencesRoute
   '/_authenticated/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
   '/_authenticated/admin/clubs': typeof AuthenticatedAdminClubsRoute
@@ -452,6 +461,7 @@ export interface FileRouteTypes {
     | '/firm'
     | '/lgi'
     | '/media'
+    | '/profile'
     | '/admin/absences'
     | '/admin/approvals'
     | '/admin/clubs'
@@ -494,6 +504,7 @@ export interface FileRouteTypes {
     | '/lgi-login'
     | '/news'
     | '/reset-password'
+    | '/profile'
     | '/admin/absences'
     | '/admin/approvals'
     | '/admin/clubs'
@@ -542,6 +553,7 @@ export interface FileRouteTypes {
     | '/_authenticated/firm'
     | '/_authenticated/lgi'
     | '/_authenticated/media'
+    | '/_authenticated/profile'
     | '/_authenticated/admin/absences'
     | '/_authenticated/admin/approvals'
     | '/_authenticated/admin/clubs'
@@ -645,6 +657,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/media': {
       id: '/_authenticated/media'
@@ -1032,6 +1051,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFirmRoute: typeof AuthenticatedFirmRouteWithChildren
   AuthenticatedLgiRoute: typeof AuthenticatedLgiRouteWithChildren
   AuthenticatedMediaRoute: typeof AuthenticatedMediaRouteWithChildren
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -1040,6 +1060,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFirmRoute: AuthenticatedFirmRouteWithChildren,
   AuthenticatedLgiRoute: AuthenticatedLgiRouteWithChildren,
   AuthenticatedMediaRoute: AuthenticatedMediaRouteWithChildren,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -1059,13 +1080,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
