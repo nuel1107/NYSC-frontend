@@ -69,7 +69,7 @@ function LGILoginPage() {
       setBusy(false);
       if (!allowed) {
         await supabase.auth.signOut();
-        toast.error("This login is only for the approved LGI Super-Admin account.");
+        toast.error("This account does not have approved LGI Super-Admin access. Sign up with the LGI role to claim the open seat.");
         return;
       }
       toast.success("Welcome, LGI Super-Admin");
@@ -114,7 +114,7 @@ function LGILoginPage() {
               name="email"
               type="email"
               autoComplete="email"
-              defaultValue="emmanuelokoye.help@gmail.com"
+              placeholder="your-lgi-email@example.com"
               required
             />
             <Field
