@@ -31,6 +31,18 @@ interface AuthCtx {
 
 const Ctx = createContext<AuthCtx | undefined>(undefined);
 
+type PortalRoleRow = { role: AppRole; status: "pending" | "approved" | "rejected" };
+
+async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
+  const { data, error } = await (supabase.rpc as unknown as (fn: "ensure_user_portal_records") => Promise<{
+    data: PortalRoleRow[] | null;
+    error: { message: string } | null;
+  }>)("ensure_user_portal_records");
+
+  if (error) throw error;
+  return data ?? [];
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -40,16 +52,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [deviceLocked, setDeviceLocked] = useState(false);
 
   const loadExtras = async (uid: string) => {
-    const [{ data: p }, { data: r }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("id,full_name,state_code,phone,avatar_url,portal_number,firm_company_name,cds_group")
-        .eq("id", uid)
-        .maybeSingle(),
-      supabase.from("user_roles").select("role,status").eq("user_id", uid).eq("status", "approved"),
-    ]);
+    const repairedRoles = await ensurePortalRecords();
+    const { data: p } = await supabase
+      .from("profiles")
+      .select("id,full_name,state_code,phone,avatar_url,portal_number,firm_company_name,cds_group")
+      .eq("id", uid)
+      .maybeSingle();
+
     setProfile(p as Profile | null);
-    setRoles(((r ?? []) as { role: AppRole }[]).map((x) => x.role));
+    setRoles(repairedRoles.filter((x) => x.status === "approved").map((x) => x.role));
 
     // Device reconciliation
     try {
@@ -65,18 +76,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
-        setTimeout(() => { void loadExtras(s.user.id); }, 0);
+        setLoading(true);
+        setTimeout(() => {
+          void loadExtras(s.user.id)
+            .catch((error) => console.error("Portal records failed to load", error))
+            .finally(() => setLoading(false));
+        }, 0);
       } else {
         setProfile(null);
         setRoles([]);
         setDeviceLocked(false);
+        setLoading(false);
       }
     });
 
     supabase.auth.getSession().then(async ({ data: { session: s } }) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) await loadExtras(s.user.id);
+      if (s?.user) {
+        await loadExtras(s.user.id).catch((error) => console.error("Portal records failed to load", error));
+      }
       setLoading(false);
     });
 
