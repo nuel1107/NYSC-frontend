@@ -35,13 +35,10 @@ type PortalRoleRow = { role: AppRole; status: "pending" | "approved" | "rejected
 const roleOrder: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
 
 export async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
-  const { data, error } = await (supabase.rpc as unknown as (fn: "ensure_user_portal_records") => Promise<{
-    data: PortalRoleRow[] | null;
-    error: { message: string } | null;
-  }>)("ensure_user_portal_records");
+  const { data, error } = await supabase.rpc("ensure_user_portal_records");
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as PortalRoleRow[];
 }
 
 export function primaryRoleFromRows(rows: PortalRoleRow[]): AppRole | null {
