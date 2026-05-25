@@ -670,7 +670,6 @@ export type Database = {
           cds_group: string | null
           created_at: string
           csr_focus: string | null
-          device_fingerprint: string | null
           firm_company_name: string | null
           full_name: string
           id: string
@@ -689,7 +688,6 @@ export type Database = {
           cds_group?: string | null
           created_at?: string
           csr_focus?: string | null
-          device_fingerprint?: string | null
           firm_company_name?: string | null
           full_name: string
           id: string
@@ -708,7 +706,6 @@ export type Database = {
           cds_group?: string | null
           created_at?: string
           csr_focus?: string | null
-          device_fingerprint?: string | null
           firm_company_name?: string | null
           full_name?: string
           id?: string
@@ -857,6 +854,10 @@ export type Database = {
       is_lgi: { Args: { _user_id: string }; Returns: boolean }
       set_event_lock: {
         Args: { _event_id: string; _lock: boolean }
+        Returns: undefined
+      }
+      touch_own_device: {
+        Args: { _device_id: string; _label: string }
         Returns: undefined
       }
     }
