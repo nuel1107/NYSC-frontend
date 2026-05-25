@@ -40,10 +40,12 @@ export async function reconcileDevice(userId: string): Promise<DeviceCheck> {
   }
 
   if (active.fingerprint === fingerprint) {
-    await supabase
-      .from("user_devices")
-      .update({ last_seen: new Date().toISOString(), label })
-      .eq("id", active.id);
+    // Owner self-update is restricted; use the SECURITY DEFINER RPC that only
+    // touches last_seen + label on the caller's own active device.
+    await supabase.rpc("touch_own_device", {
+      _device_id: active.id,
+      _label: label,
+    });
     return { state: "ok" };
   }
 
