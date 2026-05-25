@@ -32,8 +32,9 @@ interface AuthCtx {
 const Ctx = createContext<AuthCtx | undefined>(undefined);
 
 type PortalRoleRow = { role: AppRole; status: "pending" | "approved" | "rejected" };
+const roleOrder: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
 
-async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
+export async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
   const { data, error } = await (supabase.rpc as unknown as (fn: "ensure_user_portal_records") => Promise<{
     data: PortalRoleRow[] | null;
     error: { message: string } | null;
@@ -41,6 +42,11 @@ async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
 
   if (error) throw error;
   return data ?? [];
+}
+
+export function primaryRoleFromRows(rows: PortalRoleRow[]): AppRole | null {
+  const approvedRoles = rows.filter((x) => x.status === "approved").map((x) => x.role);
+  return roleOrder.find((r) => approvedRoles.includes(r)) ?? null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -106,8 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => { await supabase.auth.signOut(); };
 
   // Priority: lgi > admin > media_editor > corporate_firm > corps_member
-  const order: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
-  const primaryRole = order.find((r) => roles.includes(r)) ?? null;
+  const primaryRole = roleOrder.find((r) => roles.includes(r)) ?? null;
 
   return (
     <Ctx.Provider value={{
