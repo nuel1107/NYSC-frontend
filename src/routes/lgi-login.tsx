@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
+import { ensurePortalRecords, primaryRoleFromRows, useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/lgi-login")({
   component: LGILoginPage,
@@ -21,6 +21,9 @@ const lgiSigninSchema = z.object({
 });
 
 async function hasApprovedLGIRole(userId: string) {
+  const repairedRole = primaryRoleFromRows(await ensurePortalRecords());
+  if (repairedRole === "lgi") return true;
+
   const { data, error } = await supabase
     .from("user_roles")
     .select("id")

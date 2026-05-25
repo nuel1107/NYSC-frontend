@@ -31,6 +31,21 @@ interface AuthCtx {
 
 const Ctx = createContext<AuthCtx | undefined>(undefined);
 
+type PortalRoleRow = { role: AppRole; status: "pending" | "approved" | "rejected" };
+const roleOrder: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
+
+export async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
+  const { data, error } = await supabase.rpc("ensure_user_portal_records");
+
+  if (error) throw error;
+  return (data ?? []) as PortalRoleRow[];
+}
+
+export function primaryRoleFromRows(rows: PortalRoleRow[]): AppRole | null {
+  const approvedRoles = rows.filter((x) => x.status === "approved").map((x) => x.role);
+  return roleOrder.find((r) => approvedRoles.includes(r)) ?? null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -40,16 +55,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [deviceLocked, setDeviceLocked] = useState(false);
 
   const loadExtras = async (uid: string) => {
-    const [{ data: p }, { data: r }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("id,full_name,state_code,phone,avatar_url,portal_number,firm_company_name,cds_group")
-        .eq("id", uid)
-        .maybeSingle(),
-      supabase.from("user_roles").select("role,status").eq("user_id", uid).eq("status", "approved"),
-    ]);
+    const repairedRoles = await ensurePortalRecords();
+    const { data: p } = await supabase
+      .from("profiles")
+      .select("id,full_name,state_code,phone,avatar_url,portal_number,firm_company_name,cds_group")
+      .eq("id", uid)
+      .maybeSingle();
+
     setProfile(p as Profile | null);
-    setRoles(((r ?? []) as { role: AppRole }[]).map((x) => x.role));
+    setRoles(repairedRoles.filter((x) => x.status === "approved").map((x) => x.role));
 
     // Device reconciliation
     try {
@@ -65,18 +79,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
-        setTimeout(() => { void loadExtras(s.user.id); }, 0);
+        setLoading(true);
+        setTimeout(() => {
+          void loadExtras(s.user.id)
+            .catch((error) => console.error("Portal records failed to load", error))
+            .finally(() => setLoading(false));
+        }, 0);
       } else {
         setProfile(null);
         setRoles([]);
         setDeviceLocked(false);
+        setLoading(false);
       }
     });
 
     supabase.auth.getSession().then(async ({ data: { session: s } }) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) await loadExtras(s.user.id);
+      if (s?.user) {
+        await loadExtras(s.user.id).catch((error) => console.error("Portal records failed to load", error));
+      }
       setLoading(false);
     });
 
@@ -87,8 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => { await supabase.auth.signOut(); };
 
   // Priority: lgi > admin > media_editor > corporate_firm > corps_member
-  const order: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
-  const primaryRole = order.find((r) => roles.includes(r)) ?? null;
+  const primaryRole = roleOrder.find((r) => roles.includes(r)) ?? null;
 
   return (
     <Ctx.Provider value={{

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth, rolePortalPath, type AppRole } from "@/hooks/use-auth";
+import { ensurePortalRecords, primaryRoleFromRows, rolePortalPath, useAuth, type AppRole } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -40,6 +40,9 @@ const ROLES: { value: AppRole; label: string; note?: string }[] = [
 ];
 
 async function getApprovedPrimaryRole(userId: string): Promise<AppRole | null> {
+  const repairedRole = primaryRoleFromRows(await ensurePortalRecords());
+  if (repairedRole) return repairedRole;
+
   const { data, error } = await supabase
     .from("user_roles")
     .select("role")
@@ -76,17 +79,19 @@ function AuthPage() {
     }
     setBusy(true);
     const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
-    setBusy(false);
     if (error) {
+      setBusy(false);
       toast.error(error.message);
       return;
     }
     toast.success("Welcome back");
     try {
       const nextRole = data.user ? await getApprovedPrimaryRole(data.user.id) : null;
+      setBusy(false);
       if (nextRole) void navigate({ to: rolePortalPath(nextRole) });
       else toast.error("This account is still awaiting portal approval.");
     } catch {
+      setBusy(false);
       toast.error("Sign in worked, but your portal could not be loaded. Please try again.");
     }
   };

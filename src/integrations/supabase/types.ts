@@ -843,6 +843,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_user_portal_records: {
+        Args: never
+        Returns: {
+          role: Database["public"]["Enums"]["app_role"]
+          status: Database["public"]["Enums"]["approval_status"]
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
