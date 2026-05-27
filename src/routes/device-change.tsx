@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { getDeviceFingerprint } from "@/lib/device";
+import { getDeviceIp } from "@/lib/device";
 
 export const Route = createFileRoute("/device-change")({
   component: DeviceChangePage,
@@ -51,7 +51,7 @@ function DeviceChangePage() {
     if (!user) return;
     if (reason.trim().length < 10) { toast.error("Please describe what happened (10+ chars)"); return; }
     setBusy(true);
-    const fingerprint = await getDeviceFingerprint();
+    const fingerprint = await getDeviceIp();
     const { data, error } = await supabase.from("device_change_requests").insert({
       user_id: user.id,
       new_fingerprint: fingerprint,
