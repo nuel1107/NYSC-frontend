@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LogOut, Bell, Home, QrCode, Users, Newspaper, Shield, BarChart3, UserCheck, LayoutGrid, Briefcase, Building2, Smartphone } from "lucide-react";
+import { LogOut, Bell, Home, QrCode, Users, Newspaper, Shield, BarChart3, UserCheck, LayoutGrid, Briefcase, Building2, Smartphone, Users2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
@@ -27,9 +27,9 @@ export const adminNav: NavItem[] = [
 export const lgiNav: NavItem[] = [
   { to: "/lgi", label: "Control", icon: Shield },
   { to: "/lgi/approvals", label: "Approvals", icon: UserCheck },
+  { to: "/lgi/users", label: "Users", icon: Users2 },
   { to: "/lgi/attendance", label: "Events", icon: QrCode },
   { to: "/lgi/metrics", label: "Metrics", icon: BarChart3 },
-  { to: "/lgi/audit", label: "Audit", icon: Shield },
 ];
 
 export const mediaNav: NavItem[] = [
