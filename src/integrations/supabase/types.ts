@@ -882,6 +882,21 @@ export type Database = {
       }
       is_admin_or_lgi: { Args: { _user_id: string }; Returns: boolean }
       is_lgi: { Args: { _user_id: string }; Returns: boolean }
+      lgi_assign_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _status?: Database["public"]["Enums"]["approval_status"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
+      lgi_remove_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
       set_event_lock: {
         Args: { _event_id: string; _lock: boolean }
         Returns: undefined
