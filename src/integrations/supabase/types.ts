@@ -840,7 +840,30 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          cds_group: string | null
+          full_name: string | null
+          id: string | null
+          state_code: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          cds_group?: string | null
+          full_name?: string | null
+          id?: string | null
+          state_code?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          cds_group?: string | null
+          full_name?: string | null
+          id?: string | null
+          state_code?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       ensure_user_portal_records: {
