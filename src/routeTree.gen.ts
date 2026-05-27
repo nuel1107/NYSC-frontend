@@ -28,6 +28,7 @@ import { Route as AuthenticatedLgiIndexRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFirmIndexRouteImport } from './routes/_authenticated/firm/index'
 import { Route as AuthenticatedCorpsIndexRouteImport } from './routes/_authenticated/corps/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedLgiUsersRouteImport } from './routes/_authenticated/lgi/users'
 import { Route as AuthenticatedLgiNotificationsRouteImport } from './routes/_authenticated/lgi/notifications'
 import { Route as AuthenticatedLgiMetricsRouteImport } from './routes/_authenticated/lgi/metrics'
 import { Route as AuthenticatedLgiAuditRouteImport } from './routes/_authenticated/lgi/audit'
@@ -150,6 +151,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedLgiUsersRoute = AuthenticatedLgiUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedLgiRoute,
 } as any)
 const AuthenticatedLgiNotificationsRoute =
   AuthenticatedLgiNotificationsRouteImport.update({
@@ -347,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/lgi/audit': typeof AuthenticatedLgiAuditRoute
   '/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
   '/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
+  '/lgi/users': typeof AuthenticatedLgiUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/corps/': typeof AuthenticatedCorpsIndexRoute
   '/firm/': typeof AuthenticatedFirmIndexRoute
@@ -390,6 +397,7 @@ export interface FileRoutesByTo {
   '/lgi/audit': typeof AuthenticatedLgiAuditRoute
   '/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
   '/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
+  '/lgi/users': typeof AuthenticatedLgiUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/corps': typeof AuthenticatedCorpsIndexRoute
   '/firm': typeof AuthenticatedFirmIndexRoute
@@ -440,6 +448,7 @@ export interface FileRoutesById {
   '/_authenticated/lgi/audit': typeof AuthenticatedLgiAuditRoute
   '/_authenticated/lgi/metrics': typeof AuthenticatedLgiMetricsRoute
   '/_authenticated/lgi/notifications': typeof AuthenticatedLgiNotificationsRoute
+  '/_authenticated/lgi/users': typeof AuthenticatedLgiUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/corps/': typeof AuthenticatedCorpsIndexRoute
   '/_authenticated/firm/': typeof AuthenticatedFirmIndexRoute
@@ -490,6 +499,7 @@ export interface FileRouteTypes {
     | '/lgi/audit'
     | '/lgi/metrics'
     | '/lgi/notifications'
+    | '/lgi/users'
     | '/admin/'
     | '/corps/'
     | '/firm/'
@@ -533,6 +543,7 @@ export interface FileRouteTypes {
     | '/lgi/audit'
     | '/lgi/metrics'
     | '/lgi/notifications'
+    | '/lgi/users'
     | '/admin'
     | '/corps'
     | '/firm'
@@ -582,6 +593,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lgi/audit'
     | '/_authenticated/lgi/metrics'
     | '/_authenticated/lgi/notifications'
+    | '/_authenticated/lgi/users'
     | '/_authenticated/admin/'
     | '/_authenticated/corps/'
     | '/_authenticated/firm/'
@@ -734,6 +746,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/lgi/users': {
+      id: '/_authenticated/lgi/users'
+      path: '/users'
+      fullPath: '/lgi/users'
+      preLoaderRoute: typeof AuthenticatedLgiUsersRouteImport
+      parentRoute: typeof AuthenticatedLgiRoute
     }
     '/_authenticated/lgi/notifications': {
       id: '/_authenticated/lgi/notifications'
@@ -1019,6 +1038,7 @@ interface AuthenticatedLgiRouteChildren {
   AuthenticatedLgiAuditRoute: typeof AuthenticatedLgiAuditRoute
   AuthenticatedLgiMetricsRoute: typeof AuthenticatedLgiMetricsRoute
   AuthenticatedLgiNotificationsRoute: typeof AuthenticatedLgiNotificationsRoute
+  AuthenticatedLgiUsersRoute: typeof AuthenticatedLgiUsersRoute
   AuthenticatedLgiIndexRoute: typeof AuthenticatedLgiIndexRoute
 }
 
@@ -1028,6 +1048,7 @@ const AuthenticatedLgiRouteChildren: AuthenticatedLgiRouteChildren = {
   AuthenticatedLgiAuditRoute: AuthenticatedLgiAuditRoute,
   AuthenticatedLgiMetricsRoute: AuthenticatedLgiMetricsRoute,
   AuthenticatedLgiNotificationsRoute: AuthenticatedLgiNotificationsRoute,
+  AuthenticatedLgiUsersRoute: AuthenticatedLgiUsersRoute,
   AuthenticatedLgiIndexRoute: AuthenticatedLgiIndexRoute,
 }
 
