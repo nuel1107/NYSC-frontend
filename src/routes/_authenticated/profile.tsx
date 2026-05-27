@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader2, Smartphone, MapPin, Clock, ShieldCheck, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { getDeviceFingerprint } from "@/lib/device";
+import { getDeviceIp } from "@/lib/device";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
@@ -54,7 +54,7 @@ function ProfilePage() {
           .select("id,fingerprint,label,is_active,last_seen,created_at")
           .eq("user_id", user.id)
           .order("last_seen", { ascending: false }),
-        getDeviceFingerprint(),
+        getDeviceIp(),
       ]);
       setDevices((data ?? []) as Device[]);
       setCurrentFp(fp);
