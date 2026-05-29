@@ -15,8 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
-import { ensurePortalRecords, primaryRoleFromRows, rolePortalPath, useAuth, type AppRole } from "@/hooks/use-auth";
+import {
+  signIn,
+  signUp,
+  rolePortalPath,
+  primaryRoleFromRows,
+  useAuth,
+  type AppRole,
+} from "@/hooks/use-auth";
+import { ApiError } from "@/lib/api-client";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -32,147 +39,114 @@ const signinSchema = z.object({
 });
 
 const ROLES: { value: AppRole; label: string; note?: string }[] = [
-  { value: "corps_member", label: "Corps Member" },
-  { value: "admin", label: "Admin", note: "LGI approval required" },
-  { value: "lgi", label: "LGI Super-Admin", note: "Auto-approved if seat is open" },
-  { value: "media_editor", label: "Media Editor", note: "LGI approval required" },
+  { value: "corps_member",   label: "Corps Member" },
+  { value: "admin",          label: "Admin",          note: "LGI approval required" },
+  { value: "lgi",            label: "LGI Super-Admin", note: "Auto-approved if seat is open" },
+  { value: "media_editor",   label: "Media Editor",   note: "LGI approval required" },
   { value: "corporate_firm", label: "Corporate Firm", note: "LGI approval required" },
 ];
 
-async function getApprovedPrimaryRole(userId: string): Promise<AppRole | null> {
-  const repairedRole = primaryRoleFromRows(await ensurePortalRecords());
-  if (repairedRole) return repairedRole;
-
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("status", "approved");
-
-  if (error) throw error;
-
-  const roles = ((data ?? []) as { role: AppRole }[]).map((item) => item.role);
-  const order: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
-  return order.find((item) => roles.includes(item)) ?? null;
-}
-
 function AuthPage() {
-  const { tab } = Route.useSearch();
-  const navigate = useNavigate();
-  const { user, primaryRole, loading } = useAuth();
-  const [busy, setBusy] = useState(false);
-  const [role, setRole] = useState<AppRole>("corps_member");
+  const { tab }                       = Route.useSearch();
+  const navigate                      = useNavigate();
+  const { userId, primaryRole, loading, refresh } = useAuth();
+  const [busy,  setBusy]              = useState(false);
+  const [role,  setRole]              = useState<AppRole>("corps_member");
 
+  // Redirect if already signed in
   useEffect(() => {
-    if (!loading && user && primaryRole) {
+    if (!loading && userId && primaryRole) {
       void navigate({ to: rolePortalPath(primaryRole) });
     }
-  }, [user, primaryRole, loading, navigate]);
+  }, [userId, primaryRole, loading, navigate]);
 
+  // ── Sign in ──────────────────────────────────────────────────────────────
   const onSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    const f      = new FormData(e.currentTarget);
     const parsed = signinSchema.safeParse({ email: f.get("email"), password: f.get("password") });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
     }
     setBusy(true);
-    const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
-    if (error) {
-      setBusy(false);
-      toast.error(error.message);
-      return;
-    }
-    toast.success("Welcome back");
     try {
-      const nextRole = data.user ? await getApprovedPrimaryRole(data.user.id) : null;
+      const data    = await signIn(parsed.data.email, parsed.data.password);
+      await refresh();                          // update AuthContext state
+      const next    = primaryRoleFromRows(data.user.roles);
+      if (next) {
+        toast.success("Welcome back");
+        void navigate({ to: rolePortalPath(next) });
+      } else {
+        toast.error("This account is still awaiting portal approval.");
+      }
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Sign in failed");
+    } finally {
       setBusy(false);
-      if (nextRole) void navigate({ to: rolePortalPath(nextRole) });
-      else toast.error("This account is still awaiting portal approval.");
-    } catch {
-      setBusy(false);
-      toast.error("Sign in worked, but your portal could not be loaded. Please try again.");
     }
   };
 
+  // ── Sign up ──────────────────────────────────────────────────────────────
   const onSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
-
+    const f    = new FormData(e.currentTarget);
     const base = signinSchema.safeParse({ email: f.get("email"), password: f.get("password") });
     if (!base.success) {
       toast.error(base.error.issues[0].message);
       return;
     }
-
     const fullName = String(f.get("fullName") ?? "").trim();
     if (fullName.length < 2) {
       toast.error("Full name is required");
       return;
     }
 
-    const meta: Record<string, string> = {
-      full_name: fullName,
+    const payload: Parameters<typeof signUp>[0] = {
+      email:     base.data.email,
+      password:  base.data.password,
       role,
-      phone: String(f.get("phone") ?? ""),
+      full_name: fullName,
+      phone:     String(f.get("phone") ?? "") || undefined,
     };
 
     if (role === "corps_member") {
-      meta.state_code = String(f.get("state_code") ?? "");
-      meta.batch = String(f.get("batch") ?? "");
-      meta.stream = String(f.get("stream") ?? "");
-      meta.cds_group = String(f.get("cds_group") ?? "");
+      payload.state_code = String(f.get("state_code") ?? "") || undefined;
+      payload.batch      = String(f.get("batch")      ?? "") || undefined;
+      payload.stream     = String(f.get("stream")     ?? "") || undefined;
+      payload.cds_group  = String(f.get("cds_group")  ?? "") || undefined;
     } else if (role === "admin" || role === "lgi") {
-      meta.portal_number = String(f.get("portal_number") ?? "");
+      payload.portal_number = String(f.get("portal_number") ?? "") || undefined;
     } else if (role === "corporate_firm") {
-      meta.firm_company_name = String(f.get("firm_company_name") ?? "");
-      meta.num_staff = String(f.get("num_staff") ?? "");
-      meta.industry = String(f.get("industry") ?? "");
-      meta.applicant_role = String(f.get("applicant_role") ?? "");
-      meta.csr_focus = String(f.get("csr_focus") ?? "");
+      payload.firm_company_name = String(f.get("firm_company_name") ?? "") || undefined;
+      payload.industry          = String(f.get("industry")          ?? "") || undefined;
+      payload.applicant_role    = String(f.get("applicant_role")    ?? "") || undefined;
+      payload.csr_focus         = String(f.get("csr_focus")         ?? "") || undefined;
+      const ns = Number(f.get("num_staff"));
+      if (ns > 0) payload.num_staff = ns;
     }
 
     setBusy(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: base.data.email,
-      password: base.data.password,
-      options: { emailRedirectTo: `${window.location.origin}/`, data: meta },
-    });
-    if (error) {
+    try {
+      const data = await signUp(payload);
+      await refresh();
+      const next = primaryRoleFromRows(data.user.roles);
+      if (role === "corps_member")  toast.success("Welcome aboard. You're approved.");
+      else if (role === "lgi")      toast.success("Account created. If the LGI seat is open, you're approved.");
+      else                          toast.success("Account created. Awaiting LGI approval.");
+      if (next) void navigate({ to: rolePortalPath(next) });
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Sign up failed");
+    } finally {
       setBusy(false);
-      toast.error(error.message);
-      return;
     }
-
-    // Corporate firm: create firm row owned by new user
-    if (role === "corporate_firm" && data.user) {
-      await supabase.from("corporate_firms").insert({
-        owner_id: data.user.id,
-        company_name: meta.firm_company_name,
-        email: base.data.email,
-        phone: meta.phone || null,
-        industry: meta.industry || null,
-        applicant_role: meta.applicant_role || null,
-        num_staff: meta.num_staff ? Number(meta.num_staff) : null,
-        csr_focus: meta.csr_focus || null,
-      });
-    }
-
-    setBusy(false);
-    if (role === "corps_member") toast.success("Welcome aboard. You're approved.");
-    else if (role === "lgi")
-      toast.success("Account created. If the LGI seat is open, you're approved.");
-    else toast.success("Account created. Awaiting LGI approval.");
   };
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Left panel */}
       <div className="relative hidden bg-gradient-hero p-10 text-primary-foreground lg:flex lg:flex-col lg:justify-between">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm opacity-90 hover:opacity-100"
-        >
+        <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-90 hover:opacity-100">
           <ArrowLeft className="size-4" /> Back to home
         </Link>
         <motion.div
@@ -194,6 +168,7 @@ function AuthPage() {
         <p className="text-xs text-white/60">© {new Date().getFullYear()} Ikeja LGA Secretariat.</p>
       </div>
 
+      {/* Right panel */}
       <div className="flex items-center justify-center p-6 sm:p-10">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -206,22 +181,18 @@ function AuthPage() {
               <ArrowLeft className="size-4" /> Home
             </Link>
           </div>
+
           <Tabs defaultValue={tab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign in</TabsTrigger>
               <TabsTrigger value="signup">Create account</TabsTrigger>
             </TabsList>
 
+            {/* Sign In */}
             <TabsContent value="signin" className="mt-6">
               <form onSubmit={onSignIn} className="space-y-4">
-                <Field label="Email" name="email" type="email" autoComplete="email" required />
-                <Field
-                  label="Password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                />
+                <Field label="Email"    name="email"    type="email"    autoComplete="email"            required />
+                <Field label="Password" name="password" type="password" autoComplete="current-password" required />
                 <Button disabled={busy} className="w-full bg-gradient-primary shadow-elegant">
                   {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Sign in
                 </Button>
@@ -236,19 +207,17 @@ function AuthPage() {
               </form>
             </TabsContent>
 
+            {/* Sign Up */}
             <TabsContent value="signup" className="mt-6">
               <form onSubmit={onSignUp} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label>Account type</Label>
                   <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {ROLES.map((r) => (
                         <SelectItem key={r.value} value={r.value}>
-                          {r.label}
-                          {r.note ? ` — ${r.note}` : ""}
+                          {r.label}{r.note ? ` — ${r.note}` : ""}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -260,49 +229,34 @@ function AuthPage() {
                   <Field label="Email" name="email" type="email" autoComplete="email" required />
                   <Field label="Phone" name="phone" type="tel" />
                 </div>
-                <Field
-                  label="Password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                />
+                <Field label="Password" name="password" type="password" autoComplete="new-password" required />
 
                 {role === "corps_member" && (
                   <>
                     <div className="grid grid-cols-2 gap-3">
                       <Field label="State code" name="state_code" placeholder="LA/24A/0001" />
-                      <Field label="Batch" name="batch" placeholder="2024 Batch A" />
+                      <Field label="Batch"      name="batch"      placeholder="2024 Batch A" />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <Field label="Stream" name="stream" placeholder="Stream I" />
+                      <Field label="Stream"    name="stream"    placeholder="Stream I" />
                       <Field label="CDS group" name="cds_group" placeholder="ICT CDS" />
                     </div>
                   </>
                 )}
 
                 {(role === "admin" || role === "lgi") && (
-                  <Field
-                    label="Portal/Staff number"
-                    name="portal_number"
-                    placeholder="LGI-001"
-                    required
-                  />
+                  <Field label="Portal/Staff number" name="portal_number" placeholder="LGI-001" required />
                 )}
 
                 {role === "corporate_firm" && (
                   <>
                     <Field label="Company name" name="firm_company_name" required />
                     <div className="grid grid-cols-2 gap-3">
-                      <Field label="Industry" name="industry" placeholder="FinTech" />
+                      <Field label="Industry"        name="industry"  placeholder="FinTech" />
                       <Field label="Number of staff" name="num_staff" type="number" min={1} />
                     </div>
-                    <Field
-                      label="Your role at the firm"
-                      name="applicant_role"
-                      placeholder="HR Director"
-                    />
-                    <Field label="CSR focus" name="csr_focus" placeholder="Youth empowerment" />
+                    <Field label="Your role at the firm" name="applicant_role" placeholder="HR Director" />
+                    <Field label="CSR focus"             name="csr_focus"      placeholder="Youth empowerment" />
                   </>
                 )}
 

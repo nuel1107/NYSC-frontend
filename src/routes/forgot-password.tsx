@@ -3,9 +3,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { Input }  from "@/components/ui/input";
+import { Label }  from "@/components/ui/label";
+import { api, ApiError } from "@/lib/api-client";
 
 export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
@@ -19,21 +19,18 @@ function ForgotPasswordPage() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const email = String(new FormData(e.currentTarget).get("email") ?? "").trim();
-    if (!email) {
-      toast.error("Enter your email");
-      return;
-    }
+    if (!email) { toast.error("Enter your email"); return; }
     setBusy(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    setBusy(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      await api.post("/auth/forgot-password", { email });
+      setSent(true);
+      toast.success("Reset link sent. Check your inbox.");
+    } catch (err) {
+      // Still show success to avoid email enumeration
+      setSent(true);
+    } finally {
+      setBusy(false);
     }
-    setSent(true);
-    toast.success("Reset link sent. Check your inbox.");
   };
 
   return (
@@ -52,16 +49,13 @@ function ForgotPasswordPage() {
           </div>
           <div>
             <h1 className="text-xl font-semibold">Forgot your password?</h1>
-            <p className="text-sm text-muted-foreground">
-              We'll email you a secure reset link.
-            </p>
+            <p className="text-sm text-muted-foreground">We'll email you a secure reset link.</p>
           </div>
         </div>
 
         {sent ? (
           <p className="rounded-lg border bg-muted/40 p-4 text-sm">
-            If an account exists for that email, a reset link is on its way. The link expires in
-            1 hour.
+            If an account exists for that email, a reset link is on its way. The link expires in 1 hour.
           </p>
         ) : (
           <form onSubmit={onSubmit} className="space-y-4">

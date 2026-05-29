@@ -1,11 +1,25 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+/**
+ * use-auth.tsx
+ * Replaces the Supabase-backed AuthProvider.
+ * Reads/writes JWTs via tokenStore; calls our FastAPI backend.
+ */
+import {
+  createContext, useContext, useEffect, useState, useCallback,
+  type ReactNode,
+} from "react";
+import { api, tokenStore, ApiError } from "@/lib/api-client";
 import { reconcileDevice } from "@/lib/device";
 
-export type AppRole = "corps_member" | "admin" | "lgi" | "media_editor" | "corporate_firm";
+// ── Types ─────────────────────────────────────────────────────────────────────
 
-interface Profile {
+export type AppRole =
+  | "corps_member"
+  | "admin"
+  | "lgi"
+  | "media_editor"
+  | "corporate_firm";
+
+export interface Profile {
   id: string;
   full_name: string;
   state_code: string | null;
@@ -16,9 +30,23 @@ interface Profile {
   cds_group: string | null;
 }
 
+interface RoleRow {
+  role: AppRole;
+  status: "pending" | "approved" | "rejected";
+}
+
+interface MeResponse {
+  user: {
+    id: string;
+    roles: RoleRow[];
+    profile: Profile | null;
+  };
+  access_token: string;
+  refresh_token: string;
+}
+
 interface AuthCtx {
-  session: Session | null;
-  user: User | null;
+  userId: string | null;
   profile: Profile | null;
   roles: AppRole[];
   loading: boolean;
@@ -29,94 +57,117 @@ interface AuthCtx {
   primaryRole: AppRole | null;
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+const ROLE_ORDER: AppRole[] = [
+  "lgi", "admin", "media_editor", "corporate_firm", "corps_member",
+];
+
+export function primaryRoleFromRows(rows: RoleRow[]): AppRole | null {
+  const approved = rows.filter((r) => r.status === "approved").map((r) => r.role);
+  return ROLE_ORDER.find((r) => approved.includes(r)) ?? null;
+}
+
+export function rolePortalPath(role: AppRole | null): string {
+  switch (role) {
+    case "lgi":            return "/lgi";
+    case "admin":          return "/admin";
+    case "media_editor":   return "/media";
+    case "corporate_firm": return "/firm";
+    case "corps_member":   return "/corps";
+    default:               return "/auth";
+  }
+}
+
+// ── Context ───────────────────────────────────────────────────────────────────
+
 const Ctx = createContext<AuthCtx | undefined>(undefined);
 
-type PortalRoleRow = { role: AppRole; status: "pending" | "approved" | "rejected" };
-const roleOrder: AppRole[] = ["lgi", "admin", "media_editor", "corporate_firm", "corps_member"];
-
-export async function ensurePortalRecords(): Promise<PortalRoleRow[]> {
-  const { data, error } = await supabase.rpc("ensure_user_portal_records");
-
-  if (error) throw error;
-  return (data ?? []) as PortalRoleRow[];
-}
-
-export function primaryRoleFromRows(rows: PortalRoleRow[]): AppRole | null {
-  const approvedRoles = rows.filter((x) => x.status === "approved").map((x) => x.role);
-  return roleOrder.find((r) => approvedRoles.includes(r)) ?? null;
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [roles, setRoles] = useState<AppRole[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [userId,      setUserId]      = useState<string | null>(null);
+  const [profile,     setProfile]     = useState<Profile | null>(null);
+  const [roles,       setRoles]       = useState<AppRole[]>([]);
+  const [loading,     setLoading]     = useState(true);
   const [deviceLocked, setDeviceLocked] = useState(false);
 
-  const loadExtras = async (uid: string) => {
-    const repairedRoles = await ensurePortalRecords();
-    const { data: p } = await supabase
-      .from("profiles")
-      .select("id,full_name,state_code,phone,avatar_url,portal_number,firm_company_name,cds_group")
-      .eq("id", uid)
-      .maybeSingle();
-
-    setProfile(p as Profile | null);
-    setRoles(repairedRoles.filter((x) => x.status === "approved").map((x) => x.role));
+  const _applyMe = useCallback(async (data: MeResponse) => {
+    const { user } = data;
+    setUserId(user.id);
+    setProfile(user.profile ?? null);
+    const approvedRoles = (user.roles ?? [])
+      .filter((r) => r.status === "approved")
+      .map((r) => r.role);
+    setRoles(approvedRoles);
 
     // Device reconciliation
     try {
-      const result = await reconcileDevice(uid);
+      const result = await reconcileDevice(user.id);
       setDeviceLocked(result.state === "locked");
     } catch (e) {
       console.error("Device reconcile failed", e);
     }
-  };
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) {
-        setLoading(true);
-        setTimeout(() => {
-          void loadExtras(s.user.id)
-            .catch((error) => console.error("Portal records failed to load", error))
-            .finally(() => setLoading(false));
-        }, 0);
-      } else {
-        setProfile(null);
-        setRoles([]);
-        setDeviceLocked(false);
-        setLoading(false);
-      }
-    });
-
-    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) {
-        await loadExtras(s.user.id).catch((error) => console.error("Portal records failed to load", error));
-      }
-      setLoading(false);
-    });
-
-    return () => sub.subscription.unsubscribe();
   }, []);
 
-  const refresh = async () => { if (user) await loadExtras(user.id); };
-  const signOut = async () => { await supabase.auth.signOut(); };
+  const refresh = useCallback(async () => {
+    try {
+      const data = await api.get<MeResponse>("/auth/me");
+      await _applyMe(data);
+    } catch {
+      // Token invalid — clear state
+      tokenStore.clear();
+      setUserId(null);
+      setProfile(null);
+      setRoles([]);
+    }
+  }, [_applyMe]);
 
-  // Priority: lgi > admin > media_editor > corporate_firm > corps_member
-  const primaryRole = roleOrder.find((r) => roles.includes(r)) ?? null;
+  // Bootstrap: restore session from stored token
+  useEffect(() => {
+    const token = tokenStore.getAccess();
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    refresh().finally(() => setLoading(false));
+  }, [refresh]);
+
+  // Listen for auth:logout events (fired by api-client on 401 after refresh fails)
+  useEffect(() => {
+    const handler = () => {
+      setUserId(null);
+      setProfile(null);
+      setRoles([]);
+      setDeviceLocked(false);
+    };
+    window.addEventListener("auth:logout", handler);
+    return () => window.removeEventListener("auth:logout", handler);
+  }, []);
+
+  const signOut = useCallback(async () => {
+    await api.post("/auth/signout").catch(() => {});
+    tokenStore.clear();
+    setUserId(null);
+    setProfile(null);
+    setRoles([]);
+    setDeviceLocked(false);
+  }, []);
+
+  const primaryRole = ROLE_ORDER.find((r) => roles.includes(r)) ?? null;
 
   return (
-    <Ctx.Provider value={{
-      session, user, profile, roles, loading, deviceLocked, signOut, refresh,
-      hasRole: (r) => roles.includes(r),
-      primaryRole,
-    }}>
+    <Ctx.Provider
+      value={{
+        userId,
+        profile,
+        roles,
+        loading,
+        deviceLocked,
+        signOut,
+        refresh,
+        hasRole: (r) => roles.includes(r),
+        primaryRole,
+      }}
+    >
       {children}
     </Ctx.Provider>
   );
@@ -128,13 +179,41 @@ export function useAuth() {
   return ctx;
 }
 
-export function rolePortalPath(role: AppRole | null): string {
-  switch (role) {
-    case "lgi": return "/lgi";
-    case "admin": return "/admin";
-    case "media_editor": return "/media";
-    case "corporate_firm": return "/firm";
-    case "corps_member": return "/corps";
-    default: return "/auth";
-  }
+// ── Auth actions (used in route components) ───────────────────────────────────
+
+export async function signIn(
+  email: string,
+  password: string,
+): Promise<MeResponse> {
+  const data = await api.post<MeResponse & { access_token: string; refresh_token: string }>(
+    "/auth/signin",
+    { email, password },
+  );
+  tokenStore.set(data.access_token, data.refresh_token);
+  return data;
+}
+
+export async function signUp(payload: {
+  email: string;
+  password: string;
+  role: AppRole;
+  full_name: string;
+  phone?: string;
+  state_code?: string;
+  batch?: string;
+  stream?: string;
+  cds_group?: string;
+  portal_number?: string;
+  firm_company_name?: string;
+  num_staff?: number;
+  industry?: string;
+  applicant_role?: string;
+  csr_focus?: string;
+}): Promise<MeResponse> {
+  const data = await api.post<MeResponse & { access_token: string; refresh_token: string }>(
+    "/auth/signup",
+    payload,
+  );
+  tokenStore.set(data.access_token, data.refresh_token);
+  return data;
 }

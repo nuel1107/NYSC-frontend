@@ -8,19 +8,19 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function Gate() {
-  const { user, loading, deviceLocked } = useAuth();
+  const { userId, loading, deviceLocked } = useAuth();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     if (loading) return;
-    if (!user) { void navigate({ to: "/auth" }); return; }
+    if (!userId) { void navigate({ to: "/auth" }); return; }
     if (deviceLocked && path !== "/device-change") {
       void navigate({ to: "/device-change" });
     }
-  }, [user, loading, deviceLocked, path, navigate]);
+  }, [userId, loading, deviceLocked, path, navigate]);
 
-  if (loading || !user) {
+  if (loading || !userId) {
     return (
       <div className="grid min-h-screen place-items-center">
         <Loader2 className="size-6 animate-spin text-primary" />

@@ -2,13 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ShieldAlert, Loader2, Smartphone, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Button }        from "@/components/ui/button";
+import { Textarea }      from "@/components/ui/textarea";
+import { Label }         from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
-import { getDeviceIp } from "@/lib/device";
+import { useAuth }       from "@/hooks/use-auth";
+import { api, ApiError } from "@/lib/api-client";
+import { getDeviceIp }   from "@/lib/device";
 
 export const Route = createFileRoute("/device-change")({
   component: DeviceChangePage,
@@ -24,50 +24,59 @@ type ReqRow = {
 };
 
 function DeviceChangePage() {
-  const { user, loading, signOut } = useAuth();
+  const { userId, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [busy, setBusy] = useState(false);
-  const [path, setPath] = useState<"old_device" | "admin">("old_device");
-  const [reason, setReason] = useState("");
+  const [busy,     setBusy]    = useState(false);
+  const [path,     setPath]    = useState<"old_device" | "admin">("old_device");
+  const [reason,   setReason]  = useState("");
   const [existing, setExisting] = useState<ReqRow | null>(null);
 
   useEffect(() => {
-    if (!loading && !user) void navigate({ to: "/auth" });
-  }, [user, loading, navigate]);
+    if (!loading && !userId) void navigate({ to: "/auth" });
+  }, [userId, loading, navigate]);
 
   useEffect(() => {
-    if (!user) return;
-    void supabase
-      .from("device_change_requests")
-      .select("id,status,path,reason,created_at")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
-      .then(({ data }) => setExisting(data as ReqRow | null));
-  }, [user]);
+    if (!userId) return;
+    api.get<ReqRow[]>("/devices/change-requests")
+      .then((rows) => setExisting(rows[0] ?? null))
+      .catch(() => {});
+  }, [userId]);
 
   const submit = async () => {
-    if (!user) return;
-    if (reason.trim().length < 10) { toast.error("Please describe what happened (10+ chars)"); return; }
+    if (!userId) return;
+    if (reason.trim().length < 10) {
+      toast.error("Please describe what happened (10+ chars)");
+      return;
+    }
     setBusy(true);
-    const fingerprint = await getDeviceIp();
-    const { data, error } = await supabase.from("device_change_requests").insert({
-      user_id: user.id,
-      new_fingerprint: fingerprint,
-      new_label: navigator.userAgent.slice(0, 120),
-      reason: reason.trim(),
-      path,
-    }).select("id,status,path,reason,created_at").single();
-    setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    setExisting(data as ReqRow);
-    toast.success(path === "old_device"
-      ? "Request sent to your previous device for approval"
-      : "Request sent to administrators");
+    try {
+      const fingerprint = await getDeviceIp();
+      const data = await api.post<ReqRow>("/devices/change-request", {
+        new_fingerprint: fingerprint,
+        new_label:       navigator.userAgent.slice(0, 120),
+        reason:          reason.trim(),
+        path,
+      });
+      setExisting(data);
+      toast.success(
+        path === "old_device"
+          ? "Request sent to your previous device for approval"
+          : "Request sent to administrators",
+      );
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Failed to submit request");
+    } finally {
+      setBusy(false);
+    }
   };
 
-  if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="size-6 animate-spin text-primary" /></div>;
+  if (loading) {
+    return (
+      <div className="grid min-h-screen place-items-center">
+        <Loader2 className="size-6 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid min-h-screen place-items-center bg-gradient-subtle p-6">
@@ -99,7 +108,11 @@ function DeviceChangePage() {
           <div className="mt-6 space-y-4">
             <div className="space-y-2">
               <Label>Approval path</Label>
-              <RadioGroup value={path} onValueChange={(v) => setPath(v as typeof path)} className="grid gap-2">
+              <RadioGroup
+                value={path}
+                onValueChange={(v) => setPath(v as typeof path)}
+                className="grid gap-2"
+              >
                 <label className="flex cursor-pointer items-start gap-3 rounded-xl border p-3 hover:bg-accent/50">
                   <RadioGroupItem value="old_device" id="p-old" className="mt-0.5" />
                   <div>
@@ -119,7 +132,13 @@ function DeviceChangePage() {
 
             <div className="space-y-1.5">
               <Label htmlFor="reason">What happened?</Label>
-              <Textarea id="reason" rows={4} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="New phone, lost device, browser reinstall, etc." />
+              <Textarea
+                id="reason"
+                rows={4}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="New phone, lost device, browser reinstall, etc."
+              />
             </div>
 
             <Button onClick={submit} disabled={busy} className="w-full bg-gradient-primary">
@@ -130,7 +149,11 @@ function DeviceChangePage() {
         )}
 
         <div className="mt-6 flex justify-end">
-          <Button variant="ghost" size="sm" onClick={async () => { await signOut(); void navigate({ to: "/auth" }); }}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={async () => { await signOut(); void navigate({ to: "/auth" }); }}
+          >
             <LogOut className="mr-2 size-4" /> Sign out
           </Button>
         </div>
